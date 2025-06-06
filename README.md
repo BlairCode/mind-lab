@@ -3,7 +3,7 @@
 ---
 
 ## ✅ 项目简介  
-本项目收录了多个计算机相关课程或书籍的思维导图，包括数据结构、深度学习、计算机组成等，旨在通过结构化的视觉笔记帮助理解与复习，同时分享给有需要的同学。
+本项目收录了多个计算机相关课程或书籍的思维导图，包括数据结构、深度学习DL、计组等，旨在通过结构化的视觉笔记帮助理解与复习，同时分享给有需要的同学。
 
 ---
 
@@ -11,24 +11,28 @@
 
 | Course / Topic                    | File Formats     | Description                      |
 |---------------------------------|------------------|---------------------------------|
-| Data Structure                  | `.xmind` `.pdf`  | Core concepts of Data Structures |
-| Deep Learning (Andrew Ng)       | `.xmind` `.pdf`  | Mind maps from 吴恩达’s DL course |
-| Deep Learning (Koki Saitoh)     | `.xmind` `.pdf`  | Organized notes from 斋藤康毅’s book |
+| Data Structure                  | `.xmind` `.pdf`  | 数据结构核心概念思维导图，结合王道考研题目 |
+| Deep Learning (Andrew Ng)       | `.xmind` `.pdf`  | 吴恩达DL课程思维导图 |
+| Deep Learning (Koki Saitoh)     | `.xmind` `.pdf`  | 斋藤康毅DL书籍学习思维导图 |
 
 ---
 
 ## 🗂️ 文件说明  
 
-- `.xmind`：思维导图源文件，推荐用 [XMind](https://xmind.app/) 打开编辑。  
-- `.pdf`：导出的只读版本，适合快速浏览与打印。
+- `.xmind`：思维导图源文件，可用 [XMind](https://xmind.app/) 打开编辑。  
+- `.pdf`：思维导图导出的PDF版本，适合快速浏览与打印。
 
 ---
 
 ## 📫 联系方式  
 
-如有问题或想获取更多导图，请联系：
+如有以下情况：
+- 内容有误、提供修改意见、希望上传其他课程资料
+- 获取思维导图涉及书籍电子版、课程网址、相关学习资料
+- 想联系作者交流、交友、科研或竞赛合作
+可联系：
 
-Blair 
+作者：Blair 
 📧 zhanghoubing777@gmail.com
 ---
 
