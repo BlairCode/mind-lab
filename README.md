@@ -1,9 +1,24 @@
-# Mind-Lab 个人CS学习思维导图分享repo（持续更新）
+# 🧠Mind-Lab ｜Blair的学习笔记repo（持续更新中）
 
 ---
 
-## ✅ 项目简介  
-本项目收录了多个计算机相关课程或书籍的思维导图，包括数据结构、深度学习DL、计组、JSP等，旨在通过结构化的视觉笔记帮助理解与复习，同时分享给有需要的同学。
+## ✨ Repo简介
+
+本仓库汇集了个人学习笔记，主要以 XMind 思维导图和 PDF 格式保存，内容以计算机科学为核心，兼顾跨领域知识的积累。
+
+内容聚焦：
+
+- 💻 计算机科学学习笔记，涵盖：
+  - 深度学习 DL
+  - 数据结构
+  - 计组 ...ing
+  - JSP ...ing
+- 📖 跨领域学习笔记：
+    - 香水鉴赏 (Perfume Appreciation) ...ing
+- 📝 其他内容
+
+欢迎交流与共学！
+
 
 ---
 
@@ -15,6 +30,7 @@
 | Deep Learning (Andrew Ng)       | `.xmind` `.pdf`  | 吴恩达DL课程思维导图 |
 | Deep Learning (Koki Saitoh)     | `.xmind` `.pdf`  | 斋藤康毅DL书籍学习思维导图 |
 | Computer Organization and Architecture | `.xmind`| 计算机组成与体系结构思维导图（draft） |
+| JSP | `.xmind` |JSP (Java Server Page)思维导图 （draft）|
 
 ---
 
@@ -31,9 +47,11 @@
 - 内容有误、提供修改意见、希望上传其他课程资料、笔记等等
 - 获取思维导图涉及书籍电子版、课程网址、相关学习资料
 - 想联系作者交流、交友、科研或竞赛合作
+
 可联系：
 
 作者：Blair 
+
 📧 zhanghoubing777@gmail.com
 ---
 
