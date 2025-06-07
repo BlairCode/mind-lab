@@ -1,10 +1,10 @@
-# 🧠Mind-Lab ｜Blair的学习笔记repo（持续更新中）
+# Mind-Lab ｜Blair的学习笔记repo（持续更新中）
 
 ---
 
 ## ✨ Repo简介
 
-本仓库汇集了个人学习笔记，主要以 XMind 思维导图和 PDF 格式保存，内容以计算机科学为核心，兼顾跨领域知识的积累。
+本仓库汇集了个人学习笔记，主要以 XMind 思维导图和 PDF 格式保存，内容以计算机科学相关内容为核心，兼顾跨领域知识的积累。
 
 内容聚焦：
 
@@ -14,7 +14,7 @@
   - 计组 ...ing
   - JSP ...ing
 - 📖 跨领域学习笔记：
-    - 香水鉴赏 (Perfume Appreciation) ...ing
+    - 香水学 (Perfumery) ...ing
 - 📝 其他内容
 
 欢迎交流与共学！
@@ -31,6 +31,7 @@
 | Deep Learning (Koki Saitoh)     | `.xmind` `.pdf`  | 斋藤康毅DL书籍学习思维导图 |
 | Computer Organization and Architecture | `.xmind`| 计算机组成与体系结构思维导图（draft） |
 | JSP | `.xmind` |JSP (Java Server Page)思维导图 （draft）|
+| Perfumery |`.xmind` | Perfumery Appreciation 《香水之书》学习思维导图（draft）|
 
 ---
 
