@@ -9,12 +9,12 @@
 内容聚焦：
 
 - 💻 计算机科学学习笔记，涵盖：
-  - 深度学习 DL
-  - 数据结构
+  - 深度学习 Deep Learning (DL)
+  - 数据结构 Data Structure
   - 计组 ...ing
-  - JSP ...ing
+  - JSP(软件开发环境)
 - 📖 跨领域学习笔记：
-    - 香水学 (Perfumery) ...ing
+    - 香水学 Perfumery ...ing
 - 📝 其他内容
 
 欢迎交流与共学！
@@ -26,11 +26,11 @@
 
 | Course / Topic                    | File Formats     | Description                      |
 |---------------------------------|------------------|---------------------------------|
-| Data Structure                  | `.xmind` `.pdf`  | 数据结构核心概念思维导图，结合王道考研题目 |
-| Deep Learning (Andrew Ng)       | `.xmind` `.pdf`  | 吴恩达DL课程思维导图 |
-| Deep Learning (Koki Saitoh)     | `.xmind` `.pdf`  | 斋藤康毅DL书籍学习思维导图 |
-| Computer Organization and Architecture | `.xmind`| 计算机组成与体系结构思维导图（draft） |
-| JSP | `.xmind` |JSP (Java Server Page)思维导图 （draft）|
+| Data Structure                  | `.xmind` `.pdf`  | 数据结构核心概念思维导图，结合《2026年数据结构考研复习指导》王道考研题目 |
+| Deep Learning (Andrew Ng)       | `.xmind` `.pdf`  | 吴恩达DL课程思维导图，线上课程地址：[Bilibili](【[双语字幕]吴恩达深度学习deeplearning.ai】https://www.bilibili.com/video/BV1FT4y1E74V?vd_source=7b54f616f09b95f2ac8e4110681a53d3)|
+| Deep Learning (Koki Saitoh)     | `.xmind` `.pdf`  | 斋藤康毅DL书籍学习思维导图，原书：《深度学习入门：基于Python的理论与实现》，电子书地址：[zlibrary](https://z-lib.gd/book/5330695/f3624e/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E5%9F%BA%E4%BA%8Epython%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E7%8E%B0.html) |
+| Computer Organization and Architecture | `.xmind`| 计算机组成与体系结构思维导图（draft） ，结合《2026年计算机组成原理考研复习指导》王道考研题目|
+| JSP | `.xmind` `.pdf`|JSP (Java Server Page)思维导图，结合刘凡老师《软件开发环境》课程和《JSP基础入门》书籍|
 | Perfumery |`.xmind` | Perfumery Appreciation 《香水之书》学习思维导图（draft）|
 
 ---
