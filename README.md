@@ -13,6 +13,7 @@
   - 数据结构 Data Structure
   - 计组 ...ing
   - JSP(软件开发环境)
+  - 人工智能基础 Fundamentals of AI ...ing
 - 📖 跨领域学习笔记：
     - 香水学 Perfumery ...ing
 - 📝 其他内容
@@ -32,6 +33,7 @@
 | Computer Organization and Architecture | `.xmind`| 计算机组成与体系结构思维导图（draft） ，结合《2026年计算机组成原理考研复习指导》王道考研题目|
 | JSP | `.xmind` `.pdf`|JSP (Java Server Page)思维导图，结合刘凡老师《软件开发环境》课程和《JSP基础入门》书籍|
 | Perfumery |`.xmind` | Perfumery Appreciation 《香水之书》学习思维导图（draft）|
+| Fundamentals of AI | `.xmind` | Fundamentals of Artificial Intelligence 思维导图，结合蔡自兴、蒙祖强的《人工智能基础（第3版）》与校内选修课程（水的一B） |
 
 ---
 
