@@ -15,7 +15,7 @@
   - JSP(软件开发环境)
   - 人工智能基础 Fundamentals of AI ...ing
 - 📖 跨领域学习笔记：
-    - 香水学 Perfumery ...ing
+    - 香水学 Perfumery
 - 📝 其他内容
 
 欢迎交流与共学！
@@ -32,8 +32,8 @@
 | Deep Learning (Koki Saitoh)     | `.xmind` `.pdf`  | 斋藤康毅DL书籍学习思维导图，原书：《深度学习入门：基于Python的理论与实现》，电子书地址：[zlibrary](https://z-lib.gd/book/5330695/f3624e/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E5%9F%BA%E4%BA%8Epython%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E7%8E%B0.html) |
 | Computer Organization and Architecture | `.xmind`| 计算机组成与体系结构思维导图（draft） ，结合《2026年计算机组成原理考研复习指导》王道考研题目|
 | JSP | `.xmind` `.pdf`|JSP (Java Server Page)思维导图，结合刘凡老师《软件开发环境》课程和《JSP基础入门》书籍|
-| Perfumery |`.xmind` | Perfumery Appreciation 《香水之书》学习思维导图（draft）|
-| Fundamentals of AI | `.xmind` | Fundamentals of Artificial Intelligence 思维导图，结合蔡自兴、蒙祖强的《人工智能基础（第3版）》与校内选修课程（水的一B） |
+| Perfumery |`.xmind` `.pdf` | Perfumery Appreciation 《香水之书》学习思维导图|
+| Fundamentals of AI | `.xmind` | Fundamentals of Artificial Intelligence 思维导图，结合蔡自兴、蒙祖强的《人工智能基础（第3版）》与校内选修课程（水的一B）(draft) |
 
 ---
 
