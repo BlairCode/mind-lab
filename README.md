@@ -4,19 +4,29 @@
 
 ## ✨ Repo简介
 
-本仓库汇集了个人学习笔记，主要以 XMind 思维导图和 PDF 格式保存，内容以计算机科学相关内容为核心，兼顾跨领域知识的积累。
+本仓库汇集了个人学习笔记，主要以 XMind 思维导图和 PDF 格式保存，内容以计算机科学专业知识及其相关课程内容为核心，兼顾跨领域知识的积累。
 
 内容聚焦：
 
-- 💻 计算机科学学习笔记，涵盖：
-  - 深度学习 Deep Learning (DL)
+- 💻 计算机科学领域知识学习笔记：
+  - C语言
+  - 深度学习 Deep Learning
   - 数据结构 Data Structure
   - 计组 ...ing
   - JSP(软件开发环境)
   - 人工智能基础 Fundamentals of AI ...ing
+
+- 📚 其他课程内容：
+    - 大学物理
+    - 计算方法与实习
+    - 离散数学
+    - 概率论
+
 - 📖 跨领域学习笔记：
     - 香水学 Perfumery
+
 - 📝 其他内容
+
 
 欢迎交流与共学！
 
@@ -27,20 +37,25 @@
 
 | Course / Topic                    | File Formats     | Description                      |
 |---------------------------------|------------------|---------------------------------|
-| Data Structure                  | `.xmind` `.pdf`  | 数据结构核心概念思维导图，结合《2026年数据结构考研复习指导》王道考研题目 |
+| Data Structure                  | `.xmind` `.pdf`  | 数据结构核心概念思维导图，结合《2026年数据结构考研复习指导》王道考研题目 (王彦芳&崔晗老师授课)|
 | Deep Learning (Andrew Ng)       | `.xmind` `.pdf`  | 吴恩达DL课程思维导图，线上课程地址：[Bilibili](https://www.bilibili.com/video/BV1FT4y1E74V/?spm_id_from=333.1007.top_right_bar_window_history.content.click&vd_source=41bcc48179f71a45b4a885f3c6c1c862)|
 | Deep Learning (Koki Saitoh)     | `.xmind` `.pdf`  | 斋藤康毅DL书籍学习思维导图，原书：《深度学习入门：基于Python的理论与实现》，电子书地址：[zlibrary](https://z-lib.gd/book/5330695/f3624e/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E5%9F%BA%E4%BA%8Epython%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E7%8E%B0.html) |
-| Computer Organization and Architecture | `.xmind`| 计算机组成与体系结构思维导图（draft） ，结合《2026年计算机组成原理考研复习指导》王道考研题目|
-| JSP | `.xmind` `.pdf`|JSP (Java Server Page)思维导图，结合刘凡老师《软件开发环境》课程和《JSP基础入门》书籍|
+| Computer Organization and Architecture | `.xmind`| 计算机组成与体系结构思维导图（draft） ，结合《2026年计算机组成原理考研复习指导》王道考研题目 (黄倩&谢在鹏&周小伟老师授课)|
+| JSP | `.xmind` `.pdf`|JSP (Java Server Page)思维导图，结合刘凡&吕嘉老师《软件开发环境》课程和《JSP基础入门》书籍|
 | Perfumery |`.xmind` `.pdf` | Perfumery Appreciation 《香水之书》学习思维导图|
 | Fundamentals of AI | `.xmind` | Fundamentals of Artificial Intelligence 思维导图，结合蔡自兴、蒙祖强的《人工智能基础（第3版）》与校内选修课程（水的一B）(draft) |
+| 大学物理 | `pdf` | 大学物理笔记 (丁万平老师授课) |
+| 计算方法与实习 | `pdf` | 计算方法与实习笔记 |
+| 离散数学 & 离散数学(总结) | `pdf` | 离散数学笔记+期末复习知识提炼笔记 |
+| C语言 | `pdf` | C语言基础知识笔记 |
+| 概率论 | `pdf` | 概率论笔记(王启明老师授课)
 
 ---
 
 ## 🗂️ 文件说明  
 
 - `.xmind`：思维导图源文件，可用 [XMind](https://xmind.app/) 打开编辑。  
-- `.pdf`：思维导图导出的PDF版本，适合快速浏览与打印。
+- `.pdf`：思维导图导出的PDF版本，或笔记的PDF扫描件，适合快速浏览与打印。
 
 ---
 
