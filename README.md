@@ -34,6 +34,7 @@
 | **JSP (Java Server Page)** | `.xmind`, `.pdf` | 结合刘凡&吕嘉老师《软件开发环境》课程和《JSP基础入门》书籍                                                                       | ✅ 完成   |
 | **C 语言** | `.pdf`          | C 语言基础知识笔记                                                                                                                | ✅ 完成   |
 | **人工智能基础 (Fundamentals of AI)** | `.xmind`        | 结合蔡自兴、蒙祖强的《人工智能基础（第3版）》与校内选修课程                                                                       | 🚧 进行中 |
+| **cs231n** |`.xmind` | 结合斯坦福课程cs231n, 线上课程地址[Youtube](https://www.youtube.com/watch?v=vT1JzLTH4G4&list=PLC1qU-LWwrF64f4QKQT-Vg5Wr4qEE1Zxk) | 🚧 进行中 |
 
 ### 📚 其他专业课程
 
