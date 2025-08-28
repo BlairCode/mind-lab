@@ -32,7 +32,7 @@
 | **计算机组成与体系结构**       | `.xmind`, `.pdf`  | 结合《2026年计算机组成原理考研复习指导》王道考研题目，含往年卷   |  ✅ 完成   |
 | **JSP (Java Server Page)**     | `.xmind`, `.pdf`  | 结合《软件开发环境》课程和《JSP基础入门》书籍，含试题与往年卷     | ✅ 完成   |
 | **C语言** | `.pdf`  | C语言基础知识笔记，含课程PPT与往年卷   | ✅ 完成  |
-| **人工智能基础 (Fundamentals of AI)** | `.xmind` | 结合蔡自兴、蒙祖强《人工智能基础（第3版）》与校内选修课程（水课）  | 🚧 进行中 |
+| **人工智能基础 (Fundamentals of AI)** | `.xmind` | 结合蔡自兴、蒙祖强《人工智能基础（第3版）》与校内选修课程（水课）  | ✅ 完成  |
 
 ## 💻 计算机科学核心（拓展）
 
@@ -41,6 +41,7 @@
 | **深度学习 (Andrew Ng)**   | `.xmind`, `.pdf`  | 吴恩达 Coursera DL 课程思维导图，线上课程：[Bilibili](https://www.bilibili.com/video/BV1FT4y1E74V/)   | ✅ 完成   |
 | **深度学习 (Koki Saitoh)**  | `.xmind`, `.pdf`  | 《深度学习入门：基于Python的理论与实现》导图，电子书：[zlibrary](https://z-lib.gd/book/5330695/f3624e/)  | ✅ 完成   |
 | **cs231n**  | `.xmind`  | 斯坦福 cs231n 课程导图，线上课程：[YouTube](https://www.youtube.com/watch?v=vT1JzLTH4G4&list=PLC1qU-LWwrF64f4QKQT-Vg5Wr4qEE1Zxk) | 🚧 进行中 |
+| **强化学习** | `.xmind` | 参考强化学习的数学原理(赵世钰)，是本挺好的RL入门书籍 [zlibrary](https://zh.z-library.sk/book/118902170/2e3cea/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%9A%84%E6%95%B0%E5%AD%A6%E5%8E%9F%E7%90%86.html)| ❌ 停更|
 
 ---
 
