@@ -1,0 +1,1254 @@
+%% File: 'MCM.tex'
+%% Mode: "TeX:UTF-8"
+%% Template author: BLAIR
+
+\documentclass{mcmthesis}
+
+% -------------- 参数设置 --------------
+\mcmsetup{tstyle=\color{red}\bfseries,
+        tcn = 2611883, 
+        problem = C,   
+        sheet = true, titleinsheet = true, 
+        keywordsinsheet = true,
+        titlepage = false, abstract = false}
+
+% -------------- 宏包与格式设置 --------------
+\usepackage{newtxtext,newtxmath} % Times New Roman
+\usepackage{tocloft}  % 目录格式定制
+\usepackage{setspace} % 行间距控制
+\usepackage{indentfirst} % 首行缩进
+\usepackage{lipsum}   % 用于生成占位文本
+\usepackage{graphicx} % 图片支持
+\usepackage{bm}       % 粗体数学符号
+\usepackage{array}    % 表格增强
+\usepackage{wrapfig}
+\usepackage{titlesec}
+
+% 标题间距优化
+\titlespacing*{\section}{0pt}{7pt plus 4pt minus 3pt}{3.5pt plus 2pt minus 2pt}
+\titlespacing*{\subsection}{0pt}{5pt plus 3pt minus 2pt}{2.5pt plus 1.5pt minus 1.5pt}
+\titlespacing*{\subsubsection}{0pt}{3.5pt plus 2pt minus 1pt}{2pt plus 1pt minus 1pt}
+
+% 列表间距优化
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=3pt, topsep=3pt, parsep=0pt, partopsep=0pt}
+\setlist[enumerate]{itemsep=3pt, topsep=3pt, parsep=0pt, partopsep=0pt}
+
+% 图片/表格全局间距优化
+\setlength{\textfloatsep}{0pt}
+\setlength{\intextsep}{5pt}
+
+% 段落间距
+\setlength{\parskip}{3pt}
+
+% 目录间距调整
+\setlength{\cftbeforesecskip}{0.45em}
+\setlength{\cftbeforesubsecskip}{0.35em}
+\setlength{\cftbeforesubsubsecskip}{0.3em}
+
+% 目录引导点样式
+\renewcommand{\cftsecleader}{\cftdotfill{\cftsecdot}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftsubsecdot}}
+\renewcommand{\cftsubsubsecleader}{\cftdotfill{\cftsubsubsecdot}} 
+
+% 摘要标题样式
+\renewcommand{\abstractname}{\textbf{\Large Abstract}}
+
+% -------------- 论文标题 --------------
+\title{\textbf{Waltz of Skill and Show: From Latent Reconstruction to Hybrid System Optimization}}
+
+\begin{document}
+
+% -------------- 摘要页 --------------
+\begin{abstract}
+{
+\setlength{\parskip}{0.15em} 
+\setstretch{1.1}
+
+The elimination mechanism of \textit{Dancing with the Stars} is essentially a multi-source heterogeneous evaluation system that integrates judges' scores and audience preferences. However, due to the long-term absence of audience voting data, the operational logic of this system has always been in a black box state.
+
+To address the unobservability of latent fan votes, we establish a \textbf{Hybrid Inference Architecture}. By synergizing \textbf{Neural-Guided Variational Inference} with \textbf{Monte Carlo Rejection Sampling}, we transform rigid elimination rules into hard posterior constraints to reconstruct voting distributions under a \textbf{Dirichlet prior}. Experiments demonstrate a \textbf{99.66\% Top-1 reconstruction accuracy} and a high \textbf{Posterior Concentration Index of 0.9864}, validating the feasibility of mathematically deconstructing complex sociological latent variables via constraint-based inference.
+
+A counterfactual simulation framework and fairness metrics are constructed to compare the ranking-based system and the percentage-based system. By additionally analyzing historical exceptional cases and establishing a utility function, the results indicate that the \textbf{ranking-based system can more effectively protect technically skilled competitors}. Using a cost-benefit comparative approach, it is found that the application of rescue mechanisms is subject to \textbf{contingency-based restrictions}.
+
+To quantify the heterogeneous impact of features on competition outcomes, we proposed a \textbf{causal mediation analysis framework}. By combining \textbf{XGBoost with SHAP attribution}, we decomposed the direct and indirect effects of each feature on survival results. Experiments revealed that \textbf{age and dance partner} were the main features influencing the results, and different features had significant differences in their impact on judges versus audiences.
+
+We proposed the \textbf{Fairness-Enhanced Hybrid Scoring System (FEHSS)}, which employs XGBoost models to isolate a contestant’s merit from structural background bias by deriving \textbf{orthogonal performance residuals}. Through a \textbf{time-varying geometric aggregation mechanism}, the system dynamically balances technical and popularity dimensions, thereby mitigating over-reliance on any single metric. Counterfactual simulations demonstrate that FEHSS significantly reduces the correlation between outcomes and protected factors while achieving an \textbf{optimal balance between fairness and entertainment value} within a identified parameter range.
+
+\vspace{0.15cm}
+}
+\end{abstract}
+\setstretch{0.9}
+
+% -------------- 关键词 --------------
+
+\begin{keywords}
+Dirichlet distribution, Variational inference, Monte Carlo simulation, Bayesian inference, XGBoost, SHAP ,Utility Theory
+\end{keywords}
+
+\maketitle
+
+% -------------- 目录 --------------
+\tableofcontents
+\newpage
+
+
+
+
+% -------------- 正文 --------------
+% -------------- 1. Introduction --------------
+\section{Introduction}
+\vspace{0.1cm}
+\subsection{Background}
+\vspace{0.1cm}
+In the domain of social choice theory, hybrid assessment systems—which aggregate expert evaluation with public opinion—are ubiquitous, governing outcomes in fields ranging from political elections to talent competitions. 
+
+\begin{wrapfigure}{r}{0.42\textwidth}
+    \centering
+    \vspace{-15pt} % 适当调整上方间距
+    \includegraphics[width=\linewidth]{imgs/iceberg.png}
+    \caption{\textbf{The Iceberg Model of Information Asymmetry.}} % Caption 仅保留核心标题
+    \label{fig:iceberg}
+    \vspace{-6pt} % 适当调整下方间距
+\end{wrapfigure}
+
+\textit{Dancing with the Stars}, or DWTS, serves as a quintessential paradigm of such a system, where the final hierarchy is determined by the interplay between ``technical merit'', as quantified by judges, and ``audience appeal'', a latent variable driven by popularity and narrative \cite{1}.
+
+
+The fundamental mathematical challenge stems from \textbf{information asymmetry}, a dynamic we visually conceptualize as the \textbf{Iceberg Model} (see Figure~\ref{fig:iceberg}). Within this framework, the explicitly observable judges' scores represent only the exposed tip, while the latent fan voting distributions form the massive hidden variable beneath the surface. This structure constitutes an \textbf{Ill-posed Inverse Problem}, requiring the reconstruction of high-dimensional latent fan distributions based solely on sparse binary elimination outcomes.
+
+\subsection{Problem Restatement}
+Based on the problem description, we need to address the following tasks:
+
+\begin{itemize}
+    \item \textbf{Reconstruction of Latent Fan Votes.}
+    Construct an inverse problem framework to derive latent fan votes consistent with historical eliminations and judge scores. The model must also quantify the estimation's certainty and consistency to validate data reliability.
+
+    \item \textbf{Comparative Analysis of Voting Mechanisms. }
+     Contrast Rank-based and Percentage-based aggregations to determine fan sensitivity through counterfactual simulation. Furthermore, evaluate the efficacy and structural necessity of the "Judges’ Save" mechanism.
+
+    \item \textbf{Multidimensional Feature Impact Assessment.}
+    Utilize reconstructed fan votes to quantify covariate impacts on outcomes, specifically identifying the divergence in factors driving Technical Merit versus Audience Appeal.
+
+    \item \textbf{Optimization of Scoring Architecture.}
+    Design a robust scoring framework that integrates multi-source evaluations and mitigates outliers to maximize fairness and supersede traditional model limitations.
+
+    \item \textbf{Strategic Policy Recommendations.}
+    Synthesize the empirical findings into a comprehensive memo for the show's producers. This deliverable will provide actionable and evidence-based advice on the optimal method for combining scores and whether to implement the Judges' Save protocol in future seasons.
+\end{itemize}
+
+\subsection{Our Work}
+Our specific practices are as follows：
+
+\begin{itemize}
+    \item \textbf{Task 1: Latent Variable Reconstruction.} We propose a Hybrid Inference Architecture that integrates \textbf{Neural-guided Variational Inference} with \textbf{Monte Carlo Rejection Sampling}. This framework utilizes a Dirichlet prior to reconstruct latent fan voting shares, ensuring high consistency and certainty in reproducing historical elimination facts.
+    
+    \item \textbf{Task 2: Fairness Assessment.} We construct a \textbf{Counterfactual Causal Framework} to contrast Rank-based and Percentage-based systems. By permuting likelihood constraints and calculating the loss, we quantify structural biases and the nonlinear perturbations caused by the Judges' Save mechanism.
+    
+    \item \textbf{Task 3: Multidimensional Attribution.} A nonlinear ensemble learning framework based on \textbf{XGBoost and SHAP attribution} is established. We disentangle the influence of partner resources, age, and industry background, identifying the divergent drivers behind technical scores versus fan popularity.
+    
+    \item \textbf{Task 4: System Optimization.} We design a \textbf{Fairness-Enhanced Hybrid Scoring System} incorporating \textbf{Residual Decomposition} to strip away exogenous biases. Furthermore, a \textbf{Time-Varying Geometric Aggregation Operator} is introduced to dynamically modulate the weights between expert merit and fan influence, ensuring long-term competitive integrity.
+    
+    \item \textbf{Task 5: Memorandum and Implementation Roadmap.} At the end of this article, a data-driven reform plan for the scoring system and an implementation roadmap are provided to the program team, aiming to maximize audience engagement while reshaping the program's long-term credibility and brand value.
+\end{itemize}
+
+
+% -------------- 2. Assumptions --------------
+\section{Assumptions}
+\begin{itemize}
+    \setlength{\itemsep}{3pt}
+    
+    \item \textbf{Assumption 1: Markovian Popularity.} 
+    A contestant’s popularity at week $t$ depends solely on the state at $t-1$ and current performance. 
+    
+    \textit{Justification:} This reduces model complexity, enabling a tractable first-order recursive Bayesian update framework.
+
+    \item \textbf{Assumption 2: Dirichlet Distribution.} 
+    % At any given time $t$, the vote share vector for all contestants, denoted as $\bm{X}_t = (x_1, \dots, x_n)$, follows a Dirichlet distribution parameterized by $\bm{\alpha}_t$.
+    The vote share vector $X_t$ follows a Dirichlet distribution parameterized by $\alpha_t$. 
+    
+    \textit{Justification:} Since vote shares are compositional data constrained to a simplex, the Dirichlet distribution is the rigorous stochastic model for this domain.
+
+    \item \textbf{Assumption 3: Sufficiency of Partner Features.} 
+    The extracted historical performance metrics fully characterize a professional partner’s technical and pedagogical competence. 
+    
+    \textit{Justification:} Utilizing historical proxies significantly reduces feature dimensionality while preserving model interpretability.
+
+    \item \textbf{Assumption 4: Temporal Independence.} 
+    Each time step is treated as an independent sample point for fairness and sensitivity analysis, neglecting sequential causal dependencies.
+    
+    \textit{Justification:} As the discriminative format remains invariant throughout the evaluation, its systemic fairness measures are considered time-independent.
+
+    \item \textbf{Assumption 5: Latent Parameter Stability under Perturbations.} 
+    Fan vote prior parameters remain invariant across scoring structures, and posterior samples provide unbiased estimates of original format parameters.
+    
+    \textit{Justification:} This simplification decouples scoring systems from latent variables, enabling reconstructed data to be used for cross-format comparative analysis.
+\end{itemize}
+
+% -------------- 3. Notations --------------
+\section{Notations}
+The primary notations utilized in this paper are summarized in Table~\ref{tab:notations}.
+\begin{center}
+\vspace{-0.25cm}
+\begin{table}[h]
+\vspace{-10pt}
+\centering
+\caption{Notations}
+\vspace{0.1cm}
+\label{tab:notations}
+\renewcommand{\arraystretch}{1.1} % 稍微增加行高以提升可读性
+\begin{tabular}{ c | p{0.75\textwidth} }
+    \hline
+    \textbf{Symbols} & \textbf{Description} \\  
+    \hline
+    $t$ & Time step index representing the competition week \\
+    $i$ & Index representing a specific contestant \\
+    $N$ & Number of samples drawn in Monte Carlo simulations \\
+    $\mathcal{D}$ & Observed historical dataset containing judge scores and elimination results \\
+    $x_{i,t}$ & True latent fan vote proportion for contestant $i$ in week $t$ \\
+    $\hat{\mathbf{x}}_t$ & Posterior mean estimate vector of fan votes in week $t$ \\
+    $\bm{\alpha}_t$ & Concentration parameter vector of the Dirichlet distribution representing popularity strength \\
+    $\Theta$ & Set of global hyperparameters to be optimized, where $\Theta = \{\gamma, K, \mathbf{W}\}$ \\
+    $\gamma$ & Decay factor controlling the erosion rate of past popularity \\
+    $K$ & Bayesian learning rate controlling the driving strength of current performance on popularity growth \\
+    $\mathbf{W}$ & Weight coefficients vector associated with static features \\
+    \hline
+\end{tabular}
+\end{table}
+\vspace{-20pt}
+\end{center}
+
+% -------------- 4. Models --------------
+\section{Task 1: Inverse Reconstruction of Latent Fan Votes}
+\label{sec:task1}
+
+% \subsection{Problem Analysis and Hybrid Inference Architecture}
+Task 1 addresses the partially observable nature of the competition system where Judge Scores $J$ and Elimination Results $E$ are explicit, but Fan Vote Proportions $X$ remain latent. Reconstructing $X$ represents an ill-posed inverse problem governed by three constraints:
+
+\begin{itemize}
+    \item \textbf{Simplex Constraint:} The vote vector $X_t = [x_{1,t}, \dots, x_{n,t}]^T$ strictly adheres to the standard $(n-1)$-simplex satisfying $\sum x_{i,t} = 1$ and $x_{i,t} \ge 0$.
+    \item \textbf{Data Sparsity:} Limited historical seasons increase the risk of overfitting when applying high-dimensional regression models directly.
+    \item \textbf{Regime Shifts:} The aggregation logic alternates between \textit{Rank-based} and \textit{Percentage-based} systems which dynamically alters the feasible solution space topology.
+\end{itemize}
+
+\vspace{-0.2cm}
+\subsection{Hybrid Inference Architecture}
+
+To navigate these complexities, we propose a \textbf{Hybrid Inference Architecture} shown in Figure \ref{fig:model_arch}. This framework synergizes \textbf{Neural-Guided Variational Inference (VI)} for global optimization with \textbf{Bayesian Monte Carlo Rejection Sampling} for local density estimation \cite{2}.
+
+\begin{figure}[h]
+    \centering
+    \vspace{-0.1cm}
+    \includegraphics[width=0.7\textwidth]{imgs/Model_I_Flow.png}
+    \vspace{-0.3cm}
+    \caption{\textbf{Schematic of the proposed Hybrid Inference Architecture.}}
+    % \vspace{-0.4cm}
+    \label{fig:model_arch}
+\end{figure}
+
+\subsubsection{Bayesian Generative Framework}
+We model latent fan vote proportions using a \textbf{Dirichlet Distribution}, the natural conjugate prior for multinomial data \cite{3}. For week $t$, the probability density function is:
+
+\vspace{-0.25cm}
+\begin{equation}
+    p(X_t | \boldsymbol{\alpha}_t) = \frac{1}{B(\boldsymbol{\alpha}_t)} \prod_{i=1}^{n} x_{i,t}^{\alpha_{i,t}-1}, \quad \text{where } \boldsymbol{\alpha}_t = [\alpha_{1,t}, \dots, \alpha_{n,t}]
+\end{equation}
+
+\vspace{-0.2cm}
+The Dirichlet parameter $\alpha_{i,t}$ quantifies the $i$-th contestant’s latent popularity. Guided by empirical survival analysis (see Figure \ref{fig:survival_analysis1} and \ref{fig:survival_analysis2}), we identified Industry and Age as significant determinants of longevity, utilizing them to initialize the prior state $\alpha_0$.
+
+\begin{figure}[htbp]
+    \centering
+    % 左边的图
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/AgeBased_Analysis_Survival_Scores.png}
+        \vspace{-10pt} % 微调减少图片与标题间距
+        \caption{\textbf{Correlation between Age and Competitive Metrics.}}
+        \label{fig:survival_analysis1}
+    \end{minipage}
+    \hfill % 在两个图之间添加弹性间距，使其分别对齐左右边缘
+    % 右边的图
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/IndustryAnalysis_Surviva_Scores.png}
+        \vspace{-10pt} % 微调减少图片与标题间距
+        \caption{\textbf{Stratified Analysis of Survival and Scoring by Industry.}}
+        \label{fig:survival_analysis2}
+    \end{minipage}
+    \vspace{0.3cm}
+\end{figure}
+
+Addressing high cardinality, we aggregated `Industry' labels into five primary clusters: \textit{Actor/Actress}, \textit{Athlete}, \textit{TV Personality}, \textit{Singer/Rapper}, and \textit{Other}. The initialization function is formulated as:
+\begin{equation}
+    \alpha_{i,0} = \exp\left( \mathbf{W}_{ind} \cdot \text{OneHot}(\text{Industry}_i) + w_{age} \cdot \text{Age}_i^{norm} \right)
+\end{equation}
+The exponential function ensures non-negativity. $\mathbf{W}_{ind}$ and $w_{age}$ represent learnable global weights derived in the subsequent optimization phase.
+
+To formalize the non-stationary nature of public sentiment, we implement a \textbf{Recursive Bayesian Filter}. This mechanism propagates information temporally, utilizing the posterior vote estimate from week $t$ as the informative prior for week $t+1$. The state transition follows the linear update equation:
+\vspace{-0.1cm}
+\begin{equation}
+    \boldsymbol{\alpha}_{t+1} = \underbrace{\gamma_{dec} \cdot \boldsymbol{\alpha}_{t}}_{\text{Memory Decay}} + \underbrace{K \cdot \hat{\mathbf{x}}_{t}}_{\text{Bayesian Innovation}}
+\end{equation}
+
+\vspace{-0.2cm}
+$\gamma_{dec} \in (0,1)$ is the \textbf{Memory Decay Factor} representing natural fanbase erosion.$K > 0$ denotes the \textbf{Bayesian Innovation Coefficient} or Learning Rate. It quantifies the update magnitude induced by the most recent estimate $\hat{\mathbf{x}}_{t}$. A larger $K$ implies high elasticity where the prior is acutely sensitive to immediate performance.
+
+\subsubsection{Neural-Guided Variational Inference for Parameter Space}
+The hyperparameter set requiring optimization is $\Theta = \{\mathbf{W}_{ind}, w_{age}, \gamma, K\}$. Given data sparsity and high dimensionality, exhaustive methods like Grid Search are computationally intractable. Consequently, we employ \textbf{Neural-Guided Variational Inference (VI)} to approximate the full posterior distribution $p(\Theta | \mathcal{D})$.
+
+Maximizing the marginal likelihood function is equivalent to maximizing the ELBO. The ELBO can be decomposed into two interpretable components:
+\vspace{-0.2cm}
+\begin{align}
+    ELBO &= \underbrace{\mathbb{E}_{q_{\phi}(\Theta)}[\log p(\mathcal{D}|\Theta)]}_{\text{Reconstruction Likelihood}} - \underbrace{D_{KL}(q_{\phi}(\Theta) || p(\Theta))}_{\text{Regularization Term}}
+\end{align}
+\vspace{-0.5cm}
+\begin{itemize}
+    \item \textbf{Expected Log-Likelihood:} Represents historical reconstruction capacity, optimizing $p(\Theta)$ to align Monte Carlo simulations with actual elimination facts.
+    \item \textbf{KL Divergence:} Acts as a regularizer, compressing the search space into a high-confidence feasible region by constraining deviation from the prior.
+\end{itemize}
+
+The neural network will output a mean $\mu_{\phi}$ and a variance $\sigma_{\phi}$. To compress the search space, we extract the $\pm2\sigma_{\phi}$ confidence interval and define a compact subspace for heuristic fine-tuning: $\Theta_{search} = [\mu_{\phi} - 2\sigma_{\phi}, \mu_{\phi} + 2\sigma_{\phi}]$
+
+% We implement a lightweight inference network parameterized by $\phi$ to output the mean $\mu_{\phi}$ and variance $\sigma_{\phi}^2$. Training this network to maximize the ELBO yields optimal variational parameters. 
+
+% To contract the parameter space into a feasible region, we extract the $\pm 2\sigma$ confidence interval. This delimits a compact subspace for heuristic fine-tuning: $\Theta_{search} = [\mu_{\phi} - 2\sigma_{\phi}, \mu_{\phi} + 2\sigma_{\phi}]$
+
+This hybrid approach leverages neural network global exploration to guide local optimization, ensuring efficiency and accuracy.
+
+To validate the search space $\Theta_{search}$, we conducted an ablation study sampling parameters outside the guided region. Figure \ref{fig:param_space_impact} shows a strong negative correlation between distance from the optimum and Top-1 Accuracy. The precipitous accuracy drop in the `Unguided Space' confirms the network successfully localized the high-probability solution manifold.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imgs/Accuracy_vs_Dsitance.png}
+    \vspace{-0.2cm}
+    \caption{\textbf{Impact of Parameter Space Reduction.}}
+    \label{fig:param_space_impact}
+\end{figure}
+
+\subsubsection{Inverse Reconstruction: Monte Carlo Rejection Sampling}
+We employ a rejection sampling strategy to delineate the ``Feasible Polytope,'' the subspace of vote proportions mathematically compatible with observed historical outcomes.
+
+\noindent \textbf{Step 1. Sampling:} 
+For week $t$, we draw $N=50,000$ i.i.d. samples from the parameterized Dirichlet prior $X_t^{(m)} \sim \text{Dir}(\boldsymbol{\alpha}_t)$.
+
+\noindent \textbf{Step 2. Constraint Filtering:} 
+We construct a binary indicator function $\mathbb{I}(\mathbf{x}_t^{(m)})$ to evaluate sample consistency with the historical elimination of contestant $e$.
+
+\begin{itemize}
+    \item \textbf{Scenario A: Percentage Rule.} 
+    Validity requires the eliminated contestant $e$ to have a strictly lower total score than any other contestant $i$. The indicator function is:
+
+    \vspace{-0.25cm}
+    \begin{equation}
+        \mathbb{I}(\mathbf{x}_t^{(m)}) = \begin{cases} 
+        1, & \text{if } \forall i \neq e, \left(x_{i,t}^{(m)} + P_{J,i,t}\right) > \left(x_{e,t}^{(m)} + P_{J,e,t}\right) \\ 
+        0, & \text{otherwise} 
+        \end{cases}
+    \end{equation}
+    \vspace{-0.25cm}
+    
+    \item \textbf{Scenario B: Rank Rule.} 
+    The composite rank is the summation $R_{Total,i}^{(m)} = R_{Fan,i}^{(m)} + R_{Judge,i}$. A sample is valid if the eliminated contestant $e$ holds the lowest aggregate standing, represented by the maximum total rank:
+    \begin{equation}
+        \vspace{-0.2cm}
+        \mathbb{I}(\mathbf{x}_t^{(m)}) = \begin{cases} 
+        1, & \text{if } \arg\max_{j} (R_{Total,j}^{(m)}) = e \\ 
+        0, & \text{otherwise} 
+        \end{cases}
+        \vspace{-0.2cm}
+    \end{equation}
+\end{itemize}
+
+\noindent \textbf{Step 3. Posterior Estimation:} 
+The posterior fan vote estimate $\hat{x}_{i,t}$ is derived by calculating the \textbf{arithmetic mean} of the validated sample set $\mathcal{X}_{valid}$, effectively aggregating all Monte Carlo samples that satisfy the historical elimination constraints.
+
+\subsection{Consistency and Certainty Measures}
+\subsubsection{Consistency Measures: Reconstructing Historical Truth}
+We introduce a hierarchical consistency framework to rigorously evaluate model fidelity in reproducing elimination outcomes.
+
+\noindent \textbf{Level I: Top-1 Accuracy ($\mathcal{A}_{top1}$).} \par
+This primary metric assesses if the predicted eliminated contestant corresponds to the ground truth $e_{true,t}$ in week $t$: $\mathcal{A}_{top1} = \frac{1}{T} \sum_{t=1}^{T} \mathbb{I}(\hat{e}_{t} = e_{true,t})$
+
+Figure \ref{fig:heuristic_trajectory} illustrates the optimization trajectory. Under optimal hyperparameters, our model achieves a \textbf{Top-1 Accuracy of 99.66\%}, demonstrating exceptional fidelity.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{imgs/Heuristic_Search_Trajectory.png}
+    \vspace{-0.2cm}
+    \caption{\textbf{Heuristic Search Trajectory under Variational Inference Guidance.}}
+    \label{fig:heuristic_trajectory}
+\end{figure}
+
+\noindent \textbf{Level II: Top-k Accuracy ($\mathcal{A}_{topk}$).} \par
+We also evaluate the probability that the true eliminated contestant falls within the predicted bottom-$k$ set: $\mathcal{A}_{topk} = \frac{1}{T} \sum_{t=1}^{T} \mathbb{I}(e_{true,t} \in \text{Bottom}_k(\text{Predicted Ranks}))$
+
+As shown in Figure \ref{fig:top2_accuracy}, \textbf{Top-2 Accuracy} consistently exceeds 97.5\% and achieves 100\% in the optimized model, exhibiting robustness in borderline cases.
+
+% \vspace{-0.2cm}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imgs/Optimization_History.png}
+    \vspace{-0.2cm}
+    \caption{\textbf{Optimization History of Top-2 Consistency.}}
+    \label{fig:top2_accuracy}
+\end{figure}
+
+\subsubsection{Certainty Measures: Quantifying Systemic Ambiguity}
+Complementing consistency analysis, we evaluate probabilistic confidence using Posterior Concentration and Information Entropy.
+
+\noindent \textbf{Metric I: Posterior Concentration Index (PCI).} \par
+Utilizing posterior variance as a proxy for epistemic uncertainty, the \textbf{Posterior Concentration Index} quantifies solution space compactness:
+\begin{equation}
+    \vspace{-0.1cm}
+    PCI = 1 - \sqrt{\frac{1}{T \cdot N} \sum_{t=1}^{T} \sum_{i=1}^{N_t} \sigma_{i,t}^2}
+    \vspace{-0.2cm}
+\end{equation}
+PCI approaching unity indicates a highly constrained feasible polytope. Figure \ref{fig:pci_season} shows a global average of \textbf{98.65\%}, demonstrating high confidence. Controversial seasons exhibit lower PCI which accurately reflects latent ambiguity.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imgs/PCI.png}
+    \caption{\textbf{Posterior Concentration Index (PCI) across Seasons.}}
+    \label{fig:pci_season}
+\end{figure}
+
+\noindent \textbf{Metric II: Evolution of Information Entropy.} \par
+We calculate the Shannon Entropy of the posterior elimination probability to gauge risk dispersion. Let $m_{i,t}$ denote the frequency with which contestant $i$ satisfies the elimination criteria across $N$ simulations; the posterior elimination probability is explicitly defined as the ratio $p_{i,t} = m_{i,t}/N$. Subsequently, the Information Entropy $H_t = - \sum_{i=1}^{n} p_{i,t} \log_2(p_{i,t})$ is calculated to capture temporal dynamics.
+
+Higher entropy implies maximum stochastic ambiguity. Figure \ref{fig:entropy_evolution} reveals two critical patterns:
+\begin{enumerate}
+    \item \textbf{Temporal Uncertainty Reduction:} Entropy decreases monotonically as the model accumulates evidence, signifying the system becomes increasingly certain about the hierarchy.
+    \item \textbf{Polarization of Certainty:} A bifurcation exists where clear favorites/underdogs show rapidly decaying entropy while middle-tier contestants maintain higher levels, reflecting objective unpredictability.
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imgs/Evolution_of_Information_Entropy.png}
+    \vspace{-0.3cm}
+    \caption{\textbf{Evolution of Information Entropy (Season 23).}}
+    \label{fig:entropy_evolution}
+\end{figure}
+
+
+\section{Task 2: Counterfactual Fairness Assessment}
+\label{sec:task2}
+
+\subsection{Problem Analysis and Simulation Architecture}
+Leveraging the posterior-latent-fan vote $X_t$, Task-2 constructs a Counterfactual-Causal Inference Framework to quantify the non-linear structural heterogeneity affecting elimination outcomes. Two theoretical imperatives are addressed:
+\begin{itemize}
+    \item A dynamic ``Theoretical-Survival-Cycle" logic must be established to handle data invalidation caused by such causal path-branching.
+    \item The non-deterministic judge's \textit{Save} is parameterized as a probabilistic process driven by subjective latent variables, thereby defining the system's stochastic fairness boundaries.
+\end{itemize}
+
+To address the aforementioned challenges, a Two-Tier Simulation Architecture is proposed:
+
+\begin{enumerate}
+  \item \textbf{Historical Reconstruction Layer (Layer I):} By specifically modifying likelihood-constraint boundaries, Monte Carlo simulations are executed across historical time steps to reconstruct the counterfactual elimination sequence $E'$.
+  
+  \item \textbf{Probabilistic Intervention Simulation Layer (Layer II):} The non-deterministic \emph{Judge's Save} is modeled via a Sigmoid Logistic Response Function. This parameterizes the intervention as a stochastic process governed by a Rationality Coefficient, enabling quantitative assessment of non-linear impacts on fairness.
+\end{enumerate}
+
+
+% To address these challenges, we propose a \textbf{Two-Tier Simulation Architecture} supported by a unified evaluation system:
+% \begin{enumerate}
+%     \item \textbf{Layer I: Counterfactual Deterministic Simulation Module.} Leveraging the posterior samples of fan votes, we permute the constraint boundaries of the likelihood function, referred to as Rule Permutation, and execute Monte Carlo simulations across 335 historical time steps to infer the counterfactual elimination sequence $E'$.
+    
+%     \item \textbf{Layer II: Probabilistic Intervention Simulation Module.} Utilizing a Logistic Response Function, specifically Sigmoid, we parameterize the judges' ``Save'' behavior as a stochastic process governed by a \textbf{Rationality Coefficient}. This allows for the quantitative assessment of the non-linear influence of non-deterministic interventions on fairness.
+% \end{enumerate}
+
+\subsection{Mathematical Formalization and Fairness Evaluation System}
+To unify heterogeneous competitive formats and evaluate their equity, we first formulate explicit decision functions for contestant $i$ in week $t$. Let $J_{i,t}$ denote the normalized judge score and $x_{i,t}$ the latent fan vote.
+
+\textbf{Rank-Based Logic} maps continuous scores to discrete ranks $\mathcal{R}(\cdot)$ where larger values indicate worse performance. The total score $S_{i,t}^{Rank}$ and the elimination condition following the maximization principle are defined as:
+
+\vspace{-0.4cm}
+\begin{equation}
+    % \vspace{-0.2cm}
+    S_{i,t}^{Rank} = \mathcal{R}(J_{i,t}) + \mathcal{R}(x_{i,t}); \quad \mathbb{I}(E_{i,t}=1) \iff i = \arg\max_{k} S_{k,t}^{Rank}
+    \vspace{-0.2cm}
+\end{equation}
+
+\textbf{Percentage-Based Logic} preserves variable continuity on the simplex. With judge weight $w=0.5$, the composite score $S_{i,t}^{Pct}$ and the elimination condition following the minimization principle are:
+
+\vspace{-0.4cm}
+\begin{equation}
+    S_{i,t}^{Pct} = w \cdot \frac{J_{i,t}}{\sum_{k} J_{k,t}} + (1-w) \cdot x_{i,t}; \quad \mathbb{I}(E_{i,t}=1) \iff i = \arg\min_{k} S_{k,t}^{Pct}
+    \vspace{-0.2cm}
+\end{equation}
+
+Further quantifying the frequency of these anomalies, we define the \textbf{Absolute Injustice Rate} denoted as AIR and the \textbf{Relative Injustice Rate} denoted as RIR:
+
+\vspace{-0.4cm}
+\begin{equation}
+    AIR = \frac{1}{N_{total}} \sum_{t=1}^{T} \mathbb{I}(J_{elim}^{(t)} > \bar{J}_{surv}^{(t)}), \quad
+    RIR = \frac{1}{N_{diff}} \sum_{t=1}^{T} \mathbb{I}(J_{elim}^{(t)} > \bar{J}_{surv}^{(t)})
+    \vspace{-0.1cm}
+\end{equation}
+$N_{total}$ represents the total number of weeks across all seasons while $N_{diff}$ denotes the subset of weeks where the elimination result was altered under counterfactual conditions.
+
+Finally, conceptualizing weekly elimination as a Social Choice event, we define the \textbf{Total Utility Function} $U$ to evaluate comprehensive performance:
+
+\vspace{-0.4cm}
+\begin{equation}
+    U_{total} = w_{pro} \cdot \bar{J}_{norm} + w_{pop} \cdot X - w_{pen} \cdot I
+    \vspace{-0.2cm}
+\end{equation}
+$I$ denotes the smoothed Injustice Rate. This function balances the dual objectives of preserving technical excellence and maintaining popularity while explicitly penalizing unfair outcomes.
+
+\subsection{Case Study: Structural Tolerance Analysis of Anomalous Samples}
+Addressing specific samples in historical data that exhibit significant evaluation variance (e.g., \textit{Bobby Bones} in Season 27), we introduce a Survival Analysis framework. The objective is to measure the "Theoretical Survival Boundary" of contestants within different format spaces, thereby quantifying the sensitivity of distinct discriminative mechanisms to specific feature distributions.
+
+% \subsubsection{Definition of Theoretical Survival Boundary}
+We define the Theoretical Survival Upper Bound $L_{i}^{\mathcal{M}}$ for contestant $i$ under a specific discriminative mechanism $\mathcal{M}$ (e.g., Rank or Percentage). This variable represents the first time step in the counterfactual inference where the contestant satisfies the elimination condition:
+
+\vspace{-0.2cm}
+\begin{equation}
+    L_{i}^{\mathcal{M}} = \min \{ t \mid \mathcal{D}(i,t | \mathcal{M}) = \text{Eliminated} \}
+    \vspace{-0.2cm}
+\end{equation}
+where $\mathcal{D}(\cdot)$ is the elimination state indicator constructed based on the aforementioned decision functions $S_{i,t}$.
+
+% \subsubsection{Survival Gap Measure}
+By comparing observational data with counterfactual results via Monte Carlo simulation, the model identifies a significant \textbf{Survival Gap ($\Delta_{Gap}$)}. This metric is defined as the difference between the contestant's observed survival duration in history and their theoretical survival upper bound:
+
+\vspace{-0.2cm}
+\begin{equation}
+    \Delta_{Gap} = L_{i}^{Observed} - L_{i}^{\mathcal{M}}
+    \vspace{-0.2cm}
+\end{equation}
+The magnitude of $\Delta_{Gap}$ quantitatively characterizes the structural tolerance of the current format topology towards specific contestant types.
+
+\subsection{Probabilistic Modeling of the "Judges' Save" Intervention}
+For the non-deterministic "Judges' Save" mechanism introduced in Season 28, the model ceases to view it as a static logical judgment. Instead, we construct it as a probability distribution driven by latent discriminative logic. We employ a \textbf{Logistic Regression} framework to fit the decision boundary of judges within the endangered set (Bottom 2).
+
+Assume the endangered set $\Omega_{bottom}$ contains two pending contestants $A$ and $B$, with explicit scores $J_A$ and $J_B$ respectively. The model posits that the judges' decision to "Save A" follows a Bernoulli distribution, where the probability parameter is determined by a non-linear mapping of the capability difference via a Sigmoid activation function:
+
+\vspace{-0.2cm}
+\vspace{-0.2cm}
+\begin{equation}
+    P(Save_{A} | J_{A}, J_{B}) = \sigma(\beta \cdot \Delta J) = \frac{1}{1 + \exp(-\beta \cdot (J_{A} - J_{B}))}
+\end{equation}
+Here, $\beta$ is defined as the \textbf{Rationality Coefficient}, a critical hyperparameter determining the entropy of the system.
+
+We construct a Cost-Benefit Analysis (CBA) model to quantify the trade-off between correcting technical injustice and respecting public democratic choice. We define the \textbf{Technical Merit Gain} (Benefit) and \textbf{Fan Disenfranchisement Cost} (Cost), and deriving the critical \textbf{Efficiency Ratio} (ER) as follows:
+
+\vspace{-0.2cm}
+\vspace{-0.2cm}
+\begin{equation}
+    \text{Benefit} = J_{saved} - J_{eliminated}, \quad \text{Cost} = F_{eliminated} - F_{saved}, \quad ER = \frac{\text{Benefit}}{\text{Cost}}
+    \vspace{-0.2cm}
+\end{equation}
+An intervention is deemed efficient if and only if the technical gain sufficiently outweighs the cost of public disenfranchisement.
+
+\subsection{Fairness Dynamics and Intervention Efficacy Assessment}
+
+\subsubsection{Comparative Assessment of Fairness: Rank vs. Percentage}
+We performed a comparative evaluation of the Rank-based and Percentage-based systems in the absence of judicial intervention. Table \ref{tab:fairness_comparison} presents the quantitative results across four key metrics.
+
+\vspace{-0.2cm}
+\begin{table}[htbp]
+    \centering
+    \caption{\textbf{Fairness Metric Comparison: Rank vs. Percentage System}}
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Format} & \textbf{AIR} & \textbf{RIR} & \textbf{Sensitivity} & \textbf{Utilization} \\
+        \midrule
+        Rank System & 1.49\% & 8.20\% & 0.5667 & 1.1132 \\
+        Percentage System & 16.72\% & 91.80\% & 0.6123 & 0.7324 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:fairness_comparison}
+\end{table}
+
+Empirical analysis confirms the Rank System's superior robustness in preserving technical merit compared to the Percentage System. By discretizing the evaluation space to mitigate outlier skewing, the Rank System achieves a significantly lower Average Sensitivity Index ($0.5667$ vs. $0.6123$) and a higher Utilization Score ($1.1132$ vs. $0.7324$).
+
+While Spearman correlation analysis ($\rho = 0.8638$) indicates high global consistency between the counterfactual rankings, a critical structural divergence is observed in the Elimination Zone (Bottom 2). The divergence rate of $36.12\%$ implies that over one-third of elimination outcomes are contingent on the competitive format, identifying this structural instability as the primary driver of historical controversy.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imgs/spearman.png}
+    \vspace{-0.3cm}
+    \caption{\textbf{Spearman Correlation Analysis of Competitive Formats.}}
+    \label{fig:rank_correlation}
+\end{figure}
+
+\subsubsection{Case Study: Structural Tolerance Analysis}
+To validate these findings, we conducted a counterfactual simulation on the specific controversy of Bobby Bones in Season 27 (Figure \ref{fig:bobby_bones}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imgs/Bobb_Bone.png}
+    \vspace{-0.3cm}
+    \caption{\textbf{Counterfactual Trajectory of Bobby Bones.}}
+    \label{fig:bobby_bones}
+\end{figure}
+
+% \begin{wrapfigure}{r}{0.4\textwidth}
+%     \centering
+%     \vspace{-15pt} % 适当调整上方间距
+%     \includegraphics[width=\linewidth]{imgs/iceberg.png}
+%     \caption{\textbf{The Iceberg Model of Information Asymmetry.}} % Caption 仅保留核心标题
+%     \label{fig:iceberg}
+%     \vspace{-10pt} % 适当调整下方间距
+% \end{wrapfigure}
+
+In contrast, the counterfactual simulation under the Rank System indicates a theoretical elimination at Week 7. This significant survival gap confirms that the Percentage System possesses a higher structural tolerance for the "High Popularity-Low Merit" profile, whereas the Rank System, which we recommended, enforces a tighter lower bound on technical competency. 
+
+\subsubsection{Optimization of the Judges' Save Policy}
+Finally, we analyze the optimal deployment of the Judges' Save mechanism. 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.65\textwidth]{imgs/merit.png}
+    \caption{\textbf{Merit vs. Democracy Policy Analysis.}}
+    \label{fig:save_policy}
+\end{figure}
+
+The analysis identifies two distinct regions:
+\begin{itemize}
+    \item \textbf{Recommended Save Zone:} Located above the threshold line, this region is characterized by a significant disparity in judge scores (e.g., saving 10 technical points) and a minor difference in fan votes. In this domain, intervention yields high technical recovery with minimal democratic cost.
+    \item \textbf{Controversial Zone:} Located below the threshold line where the technical difference is negligible (e.g., 0.5 points) but the fan vote gap is substantial. Intervention here is inefficient and prone to inducing public backlash.
+\end{itemize}
+
+Quantitative modeling suggests that unconditional intervention is suboptimal. We propose a conditional mechanism with a dynamic trigger threshold: the Judges' Save should only be activated when the normalized judge score difference between the bottom two contestants exceeds \textbf{5\%}. 
+
+\vspace{-0.2cm}
+\section{Task 3: Causal Interpretation of Evaluation Logics}
+\vspace{-0.2cm}
+\label{sec:task3}
+
+\subsection{Feature Space Construction}
+DWTS relies on a dual-source mechanism: Judges (prioritizing objective skills) and the Audience (influenced by subjective popularity and 'anchoring effects'). Since direct correlation analysis obscures this heterogeneity, we construct independent models to quantify the differential feature impacts on Judge Scores ($S_{judge}$) and Fan Votes ($V_{fan}$).
+
+To reduce the dimensionality of the high-cardinality "Pro Partner" feature while retaining information, we performed feature engineering. Instead of using one-hot encoding for individual partners, we extracted three core competency metrics: \textit{Average Historical Rank}, \textit{Previous Seasons Participated}, and \textit{Previous Championships Won}.
+Consequently, the feature space is partitioned into two distinct sets:
+\begin{itemize}
+    \item \textbf{Static Attribute Features ($X_{stat}$):} Includes Contestant Age, Industry Category (5 classes), and the three engineered Partner Competency features.
+    \item \textbf{Dynamic Performance Features ($X_{perf}$):} Includes the Judge Score ($S_{judge}$) of the current week and the Predicted Fan Vote Share ($V_{fan}$).
+\end{itemize}
+
+\subsection{The Three-Tier XGBoost Architecture}
+Traditional linear regression fails to capture high-order interactions (e.g., the non-linear decay of physical capability with age, or the synergistic effect between industry type and partner skill) \cite{4}. To address this, we employ \textbf{eXtreme Gradient Boosting (XGBoost)}, an ensemble framework based on decision trees. We minimize the regularized objective function $\mathcal{L}(\phi)$:
+
+\vspace{-0.2cm}
+\begin{equation}
+    \mathcal{L}(\phi) = \sum_{i} l(\hat{y}_{i}, y_{i}) + \sum_{k} \Omega(f_{k})
+    \vspace{-0.2cm}
+\end{equation}
+
+Here, $l(\cdot)$ is the differentiable convex loss function, and $\Omega(f_k) = \gamma T + \frac{1}{2}\lambda ||w||^2$ is the regularization term controlling tree complexity (leaves $T$ and weights $w$).
+
+We establish three independent models to isolate the specific drivers of judges, audience, and survival:
+\begin{enumerate}
+    \item \textbf{Model A (Judge Preference):} A regression model fitting $S_{judge} = f_A(X_{stat})$, aiming to isolate how static attributes impact technical scoring.
+    \item \textbf{Model B (Audience Preference):} A regression model fitting $V_{fan} = f_B(X_{stat}, S_{judge})$, aiming to analyze the joint influence of static identity and judge guidance on public voting.
+    \item \textbf{Model C (Survival Analysis):} A binary classification model predicting promotion status, minimizing the Log-Loss: $\mathcal{L}(\theta) = -\sum_{i} [y_{i}\log(\hat{y}_{i}) + (1-y_{i})\log(1-\hat{y}_{i})]$
+\end{enumerate}
+
+\subsection{Game-Theoretic Interpretability via SHAP Architecture}
+Although XGBoost excels in handling non-linear data, as an ensemble tree model, it lacks the intuitive interpretability of linear regression. To resolve this "Black Box" nature, we integrate the \textbf{SHAP (SHapley Additive exPlanations)} framework. Based on cooperative game theory, SHAP provides a unified measure of feature importance by attributing the prediction output to the marginal contribution of each feature.
+
+\subsubsection{Mathematical Definition of Shapley Value}
+SHAP conceptualizes the model prediction as a multi-player cooperative game:
+\begin{itemize}
+    \item \textbf{Players:} The set of input features $F = \{Age, Industry, \dots\}$.
+    \item \textbf{Payout:} The model's prediction output $f(x)$.
+\end{itemize}
+
+For a specific sample $x_i$, the SHAP value $\phi_j(x_i)$ for feature $j$ represents its \textbf{Marginal Contribution}. To strictly allocate contribution, we calculate the expected marginal contribution of feature $j$ across all possible feature subsets $S$:
+
+\vspace{-0.2cm}
+\begin{equation}
+    \phi_{j}(x_{i}) = \sum_{S \subseteq F \setminus \{j\}} \frac{|S|!(|F|-|S|-1)!}{|F|!} [f(S \cup \{j\}) - f(S)]
+    \vspace{-0.2cm}
+\end{equation}
+
+In this formulation, the term $[f(S \cup \{j\}) - f(S)]$ quantifies the marginal contribution of feature $j$ to the model's prediction relative to a subset $S$, while the coefficient $\frac{|S|!(|F|-|S|-1)!}{|F|!}$ serves as a combinatorial weight to ensure that all possible permutations of feature coalitions are treated equally in the attribution process.
+
+\subsubsection{Local Additivity and Global Importance Mechanism}
+
+To quantify the heterogeneous influence of features on survival outcomes, we leverage the SHAP framework. This method provides a unified measure of feature importance by attributing the prediction output to the marginal contribution of each feature within a game-theoretic structure. Our analysis relies on two core properties:
+
+\vspace{-0.2cm}
+\vspace{-0.2cm}
+\begin{equation}
+    f(x_i) = \phi_0 + \sum_{j=1}^{M} \phi_j(x_i)
+    \vspace{-0.2cm}
+\end{equation}
+where $\phi_0$ is the base value and $\phi_j(x_i)$ represents the specific contribution of feature $j$. This allows us to trace precisely how attributes like Age or Judge Score shift survival probability. Simultaneously, to derive a holistic hierarchy, we define the global importance $I_j$ as the mean absolute SHAP value:
+
+\vspace{-0.2cm}
+\vspace{-0.2cm}
+\begin{equation}
+    I_j = \frac{1}{N} \sum_{i=1}^{N} |\phi_j(x_i)|
+    \vspace{-0.2cm}
+\end{equation}
+
+% \subsubsection{Additivity and Local Explanation}
+% A core property of SHAP values is \textbf{Additivity}. For any given sample, the sum of all feature SHAP values equals the difference between the model's prediction and the base value:
+
+% \vspace{-0.2cm}
+% \vspace{-0.2cm}
+% \begin{equation}
+%     f(x_{i}) = \phi_{0} + \sum_{j=1}^{M} \phi_{j}(x_{i})
+%     \vspace{-0.2cm}
+% \end{equation}
+% This property enables precise score attribution. For instance, if a contestant's survival probability is 20\% higher than the baseline, the model can explicitly quantify how much of this gain is derived from their Industry attribute versus their Judge Scores.
+
+% \subsubsection{Global Importance and Interaction Analysis}
+% To evaluate the influence of features on the outcome from a holistic perspective, we define the \textbf{Global Importance} $I_j$ of a feature as the mean absolute SHAP value across the entire dataset:
+
+% \vspace{-0.2cm}
+% \vspace{-0.2cm}
+% \begin{equation}
+%     I_{j} = \frac{1}{N}\sum_{i=1}^{N}|\phi_{j}(x_{i})|
+%     \vspace{-0.2cm}
+% \end{equation}
+
+\subsection{Causal Mediation Analysis Framework}
+One innovation of this study is the application of \textbf{Causal Mediation Analysis}. In analyzing the determinants of survival, it is crucial to distinguish whether a feature affects the outcome by  degrading technical performance, or by inducing inherent prejudice. We construct two contrastive models based on the Survival Analysis architecture to calculate the \textbf{Skill Translation Rate}.
+
+\begin{itemize}
+    \item \textbf{Model 1 (Total Effect Model):} Inputs only static features $X_{stat}$. This model captures the total causal influence of a feature on survival: $I_{j}^{total} = \text{Importance of } j \text{ in } P(\text{Safe} | X_{stat})$
+    
+    \item \textbf{Model 2 (Direct Effect Model):} Inputs both $X_{stat}$ and dynamic performance features $X_{perf}$. Here, $X_{perf}$ acts as a \textbf{Mediator}, encapsulating the influence related to a contestant's professional technical ability: $I_{j}^{direct} = \text{Importance of } j \text{ in } P(\text{Safe} | X_{stat}, X_{perf})$
+\end{itemize}
+
+We define the \textbf{Skill Translation Rate ($\lambda_j$)} to quantify the proportion of a feature's influence that is mediated by dynamic performance:
+
+\vspace{-0.2cm}\vspace{-0.2cm}
+\begin{equation}
+    \lambda_{j} = \frac{I_{j}^{total} - I_{j}^{direct}}{I_{j}^{total}} \times 100\%
+    \vspace{-0.2cm}
+\end{equation}
+\begin{itemize}
+    \item If $\lambda_j \approx 100\%$: The feature's impact is realized entirely through the contestant's individual capability (No Bias).
+    \item If $\lambda_j \le 0$: The feature's importance increases after controlling for dynamic performance, suggesting that the feature primarily influences the result through inherent bias.
+\end{itemize}
+\subsection{Experimental Results and Analysis}
+\subsubsection{Survival Analysis Model: Mediation and Bias Quantification}
+\label{subsec:survival_results}
+
+We first analyze the results from the Survival Analysis Model, denoted as Model C, to decouple the "Skill-Mediated" influence from "Direct Bias." Figure \ref{fig:mediation_analysis} presents the contrast between Feature Importance in the Total Effect Model and the Direct Effect Model. 
+
+\noindent \textbf{I. 'Celebrity Age' and 'Partner Avg Rank'} \par
+\begin{enumerate}
+    \item \textbf{Age Factor:} 'Celebrity Age' importance precipitates from 0.47 (Total Effect) to 0.08 (Direct Effect) upon controlling for dynamic features, yielding an 82.6\% Skill Translation Rate. This suggests elimination risk for older contestants stems from age-related physiological decline lowering technical scores, rather than subjective ageism.
+
+    \item \textbf{Professional Partners:} 'Partner Avg Rank' shows a similar trend, dropping from 0.27 to 0.018 (93.1\% Skill Translation Rate). This confirms a partner's primary value is pedagogical: they ensure survival by enhancing the celebrity's technique and scores rather than leveraging historical popularity for votes.
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imgs/mediation_barchart.png}
+    \vspace{-0.2cm}\vspace{-0.2cm}
+    \caption{\textbf{Causal Mediation Analysis of Static Features.}}
+    \label{fig:mediation_analysis}
+\end{figure}
+
+% \begin{wrapfigure}{r}{0.4\textwidth}
+%     \centering
+%     \vspace{-15pt} % 适当调整上方间距
+%     \includegraphics[width=\linewidth]{imgs/mediation_barchart.png}
+%     \caption{\textbf{Causal Mediation Analysis of Static Features.}} % Caption 仅保留核心标题
+%     \label{fig:mediation_analysis}
+%     \vspace{-10pt} % 适当调整下方间距
+% \end{wrapfigure}
+
+\begin{wrapfigure}{r}{0.48\textwidth}
+    \centering
+    % \vspace{-4pt} % 适当调整上方间距
+    \includegraphics[width=\linewidth]{imgs/interaction_heatmap.png}
+    \vspace{-0.9cm}
+    \caption{\textbf{Feature Interaction Heatmap.}} % Caption 仅保留核心标题
+    \label{fig:interaction_heatmap}
+    \vspace{-1cm} % 适当调整下方间距
+\end{wrapfigure}
+
+\noindent \textbf{II. The Dominance of Fan Votes} \par
+
+Figure \ref{fig:interaction_heatmap} illustrates the interaction between scoring and popularity. The model identifies Fan Vote Share (0.50) as a far stronger survival driver than Judge Score (0.12). This stems from the fact that judge scores cluster within 6–9 with low variance, lacking the discriminative power of high-variance audience votes despite the nominal 50/50 split. Consequently, as shown in the heatmap, eliminations concentrate in low-vote intervals where survival is extremely sensitive to fan support—high judge scores frequently fail to "save" contestants with insufficient votes.
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.6\textwidth]{imgs/interaction_heatmap.png}
+%     \caption{\textbf{Feature Interaction Heatmap Comparing Fan Vote and Judge Score.}}
+%     \vspace{1pt}
+%     \label{fig:interaction_heatmap}
+% \end{figure}
+
+
+\subsection{Feature Importance Comparison}
+
+Tables \ref{tab:judge_feat} and \ref{tab:fan_feat} present the top-5 features influencing Judge Scores and Fan Votes, respectively.
+
+\begin{table}[htbp]
+    \centering
+    % 左侧表格
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \caption{\textbf{Top-5 Features: Judge Scores}}
+        % 使用 resizebox 确保表格适应半页宽度 (可选)
+        \resizebox{\textwidth}{!}{
+            \begin{tabular}{lc}
+                \toprule
+                \textbf{Feature} & \textbf{Contribution} \\
+                \midrule
+                Celebrity Age & 0.555105 \\
+                Partner Avg Rank & 0.176724 \\
+                Partner Prev Seasons & 0.097185 \\
+                Industry: Actor/Actress & 0.050416 \\
+                Partner Prev Wins & 0.048966 \\
+                \bottomrule
+            \end{tabular}
+        }
+        \label{tab:judge_feat}
+    \end{minipage}
+    \hfill % 左右表格之间的弹性间距
+    % 右侧表格
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \caption{\textbf{Top-5 Features: Fan Votes}}
+        \resizebox{\textwidth}{!}{
+            \begin{tabular}{lc}
+                \toprule
+                \textbf{Feature} & \textbf{Contribution} \\
+                \midrule
+                Avg Judge Score & 0.616515 \\
+                Industry: Athlete & 0.200608 \\
+                Partner Avg Rank & 0.056076 \\
+                Celebrity Age & 0.043581 \\
+                Partner Prev Seasons & 0.035048 \\
+                \bottomrule
+            \end{tabular}
+        }
+        \label{tab:fan_feat}
+    \end{minipage}
+\end{table}
+
+It is observable that \textit{Celebrity Age} exerts a substantial influence on Judge Scores, accounting for the largest predictive contribution. Similarly, \textit{Partner Avg Rank} aligns with the age feature, showing a stronger propensity to influence experts rather than the audience. This finding corroborates the results derived from our previous mediation experiment. 
+
+Conversely, regarding the audience, the paramount influencer is the \textit{Judge Score}, signifying that technical scoring serves a potent guiding function for public voting behavior. Furthermore, the visualization indicates a distinct audience bias: when a contestant belongs to the \textit{Athlete} profession, the audience exhibits a significantly higher propensity to cast votes in their favor.
+
+In summary, the experimental results comprehensively analyze the impact of distinct contestant features on the final competitive outcome. Simultaneously, they rigorously demonstrate that the feature sets influencing the Judges and the Audience differ significantly, confirming the structural heterogeneity of the dual-evaluation mechanism.
+
+\section{Task 4: Optimization of the Scoring Architecture}
+\label{sec:task4}
+
+\subsection{Systemic Challenges and The FEHSS Framework}
+In optimizing the DWTS format, the explicit variable is the Judge Score ($J$), while the Fan Vote Distribution ($X$) is an estimated latent variable. Both are heavily confounded by non-competitive factors like age and partner capability. This confounding obscures the unbiased latent variable—the "True Competitive Level"—causing the evaluation system to deviate from fairness. From a modeling perspective, constructing a fair system thus presents two fundamental difficulties:
+
+\begin{itemize}
+    \item \textbf{High Collinearity of Background Factors.} Variables like age negatively correlate with judge scores, and audience voting follows judge guidance. This requires the model to orthogonalize the feature space, decoupling the background-determined "Trend Component" from the effort-reflecting "Residual Component."
+    
+    \item \textbf{Non-Stationary Multi-Objective Balance.} Completely removing background factors may reduce commercial appeal. Thus, the model must dynamically balance "Competitive Fairness" and "Commercial Spectacle," necessitating adaptive weight parameters that evolve throughout the competition schedule.
+\end{itemize}
+
+Based on these challenges, we propose a \textbf{Fairness-Enhanced Hybrid Scoring System (FEHSS)}. This system uses statistical learning models to establish a benchmark expectation, employs residual analysis to strip away background factors, and introduces a time-decay mechanism to reconstruct the comprehensive score, thereby maintaining commercial viability.
+
+\subsection{Statistical Learning-Based Background Decoupling Mechanism}
+In this model, the Observed Score of a contestant is defined as a non-linear superposition of an explicit "Background Trend Component" and an implicit "Competitive Residual Component." To acquire the true competitive level, the model utilizes the predictors constructed in Task 3 to quantify and decouple the background trend.
+
+\subsubsection{Construction of Non-Linear Expectation Benchmarks}
+Research in Task 3 indicated that the influence of background variables on results exhibits significant non-linearity. Therefore, we utilize the \textbf{XGBoost} framework to build the expectation benchmark model.
+
+Based on SHAP value contribution analysis, we construct two independent benchmark predictors:
+
+\textbf{A. Expected Technical Score Model ($E[J_i]$)}
+This model aims to predict the theoretical technical score achievable considering only physiological limits and resource allocation. Its mathematical form is defined as:
+
+\vspace{-0.2cm}
+\begin{equation}
+    E[J_i] = \mathcal{F}_{XGB}^A(X_{stat}) = \mathcal{F}_{XGB}^A(\text{Age}_i, \text{PartnerRank}_i, \text{Industry}_i, \dots)
+    \vspace{-0.2cm}
+\end{equation}
+SHAP analysis shows that age contributes 55.5\% to the marginal contribution of judge scores, followed by the partner's historical average rank at 17.7\%. $E[J_i]$ reflects the "Base Score" a contestant can attain given physiological decline and auxiliary resource differences determined by the partner.
+
+\textbf{B. Expected Popularity Model ($E[V_i]$)}
+This model aims to predict the theoretical audience votes under the judge guidance effect and professional dividends. Its form is:
+
+\vspace{-0.2cm}\vspace{-0.2cm}
+\begin{equation}
+    E[V_i] = \mathcal{F}_{XGB}^B(X_{stat}, J_i) = \mathcal{F}_{XGB}^B(J_i, \text{IsAthlete}_i, \dots)
+    \vspace{-0.2cm}
+\end{equation}
+Analysis indicates that the Average Judge Score has a decisive guiding effect on audience voting (61.6\% contribution), and Athlete status carries a significant inherent professional dividend (20.1\% contribution). $E[V_i]$ characterizes the benchmark voting tendency of the audience under the influence of the "Herd Effect" and "Professional Filters."
+
+\subsubsection{Residual Fairness Correction and Physical Interpretation}
+After obtaining the expected distribution based on XGBoost, we define the "Fair Score" as the corrected residual of the observed value relative to the expected benchmark. Introducing an adjustment coefficient $\delta$, the formula is:
+
+\vspace{-0.2cm}\vspace{-0.2cm}
+\begin{equation}
+    S_{adj} = S_{obs} - \delta \cdot (E[S|X] - \mu_{global})
+    \vspace{-0.2cm}
+\end{equation}
+This mechanism, combined with the "Causal Mediation Effect" conclusion from Task 3, has a clear physical meaning.
+
+\subsection{Dynamic Geometric Weighting and Temporal Evolution}
+After obtaining the orthogonalized Adjusted Technical Score $J_{adj}$ and Adjusted Popularity Score $V_{adj}$ via residual analysis, we introduce a time-varying weight function and a geometric aggregation mechanism.
+
+\subsubsection{Construction of Time-Varying Weights}
+To characterize the non-stationary evolution of the DWTS evaluation standard—focusing on professional capability in the early stages and popularity in the later stages—we define the technical weight parameter $\alpha(t)$ to follow an exponential decay distribution:
+
+\vspace{-0.2cm}\vspace{-0.2cm}
+\begin{equation}
+    \alpha(t) = \alpha_{min} + (\alpha_{max} - \alpha_{min}) \cdot e^{-\lambda(t-1)}
+    \vspace{-0.2cm}
+\end{equation}
+The parameters are set as follows:
+\begin{itemize}
+    \item \textbf{Initial Technical High-Pressure ($\alpha_{max}=0.7$):} In the early season, the model assigns high weight to judge scores to quickly screen for contestants with basic dance literacy.
+    \item \textbf{Terminal Market Orientation ($\alpha_{min}=0.4$):} In the finals, the weight tilts towards audience votes, respecting the market's commercial choice.
+    \item \textbf{Decay Rate ($\lambda=0.25$):} Controls the smoothness of the transition from professional competition to mass entertainment.
+\end{itemize}
+
+\subsubsection{Geometric Mean Based on Cobb-Douglas Paradigm}
+To construct a strongly constrained scoring system, the Final Score $Score_{final}$ adopts a multiplicative geometric weighting form, analogous to the Cobb-Douglas utility function:
+
+\vspace{-0.2cm}\vspace{-0.2cm}
+\begin{equation}
+    Score_{final}(t) = (J_{adj})^{\alpha(t)} \cdot (V_{adj})^{1-\alpha(t)}
+    \vspace{-0.2cm}
+\end{equation}
+The mathematical properties of the geometric mean determine its high sensitivity to minimum values. If a contestant's score in either dimension approaches zero, their total score will sharply converge to zero. 
+
+This aggregation method mathematically forces contestants to pursue the joint maximization of $J_{adj}$ and $V_{adj}$. Compared to the arithmetic mean, the geometric mean severely penalizes "Single-Dimension Dependency" strategies, ensuring that advancing contestants are robust in both technique and popularity.
+
+\subsection{Counterfactual Simulation Verification and Multi-Dimensional Evaluation}
+To verify the superiority of the new evaluation system, we utilize the "Counterfactual Simulation Framework" established in Task 2 to compare the performance of the new system against traditional format under a unified evaluation benchmark.
+
+We employ Monte Carlo methods ($N=1000$ iterations/week) to backtest 34 historical seasons, focusing on three core dimensions: Elite Fairness, System Stability, and Structural Correction. 
+\begin{enumerate}
+    \item \textbf{Step 1:} Retain the original judge scores $J_{obs}$ and the latent popularity shares $V_{latent}$.
+    \item \textbf{Step 2:} Remove the original "Percentage" or "Rank" logic and substitute it with the FEHSS system's algorithms to calculate $Score_{final}$.
+    \item \textbf{Step 3:} Regenerate rankings and elimination lists based on $Score_{final}$, constructing a "Counterfactual Elimination Set," and compare it with historical results and technical levels.
+\end{enumerate}
+
+\subsection{Experimental Results and Performance Evaluation of the FEHSS}
+
+To demonstrate the efficacy of the Fairness-Enhanced Hybrid Scoring System, we conduct a comprehensive evaluation using historical data. This section focuses on the comparative performance of the system and the optimization of its control parameters.
+
+\subsubsection{System Efficacy and Decoupling Analysis}
+The simulation results across 34 seasons indicate that the FEHSS successfully balances competitive integrity with entertainment value. A quantitative comparison of the key metrics is presented in Table \ref{tab:system_performance}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{\textbf{Performance Comparison across Scoring Formats}}
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Metric} & \textbf{Rank System} & \textbf{Percentage System} & \textbf{FEHSS} \\
+        \hline
+        Absolute Injustice Rate (AIR) & 1.49\% & 16.72\% & 9.2\% \\
+        \hline
+        Relative Injustice Rate (RIR) & 27.3\% & 94.0\% & 72.7\% \\
+        \hline
+        Age Correlation & \multicolumn{2}{c|}{0.55} & 0.18 \\
+        \hline
+    \end{tabular}
+    \label{tab:system_performance}
+\end{table}
+
+The empirical evidence shows that the FEHSS effectively decouples age-related biases from the final rankings. Specifically, the correlation between age and ranking is reduced from a high of 0.55 to a weak correlation of 0.18. This reduction signifies that the competition outcomes have returned to reflecting actual performance rather than demographic advantages. On an individual level, technically proficient but older contestants, such as Jerry Rice in Season 2, see their average rankings increase by 3 to 4 positions. Conversely, contestants relying on youth or partner popularity but lacking technical skill have their "premium" scores effectively filtered out.
+
+\subsubsection{Parameter Optimization and Sensitivity Mapping}
+To determine the optimal adjustment intensity for the technical and popularity components, we analyze the sensitivity of the injustice rate to the parameters $\delta_J$ representing technical adjustment and $\delta_V$ representing popularity adjustment. The results of this analysis are visualized in Figure \ref{fig:sensitivity_heatmap}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{imgs/popularity_heat.png}
+    \vspace{-0.2cm}\vspace{-0.2cm}
+    \caption{\textbf{Injustice Rate Sensitivity Heatmap.}}
+    \label{fig:sensitivity_heatmap}
+\end{figure}
+
+The experimental findings identify a specific region, termed the Sweet Spot, where the system achieves the lowest injustice rate. This zone is defined by $\delta_J$ values within the range of 0.4 to 0.6 and $\delta_V$ values within 0.2 to 0.4. It is observed that excessive adjustment, particularly when $\delta_J$ exceeds 0.8, leads to a rebound in the injustice rate. This indicates that forcefully neutralizing all background differences may inadvertently disrupt the natural performance distribution of the competition. Therefore, the FEHSS adopts these optimized parameters to ensure a robust and fair evaluation environment.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% -------------- 5. Sensitivity Analysis --------------
+\section{Sensitivity and Robustness Analysis}
+
+To ensure the reliability of the proposed framework and quantify the impact of key parameters, we conduct a comprehensive sensitivity analysis. This evaluation covers the robustness of the recursive inference algorithm, the marginal utility of the judge rationality coefficient, and the structural sensitivity of the scoring features.
+
+\subsection{Robustness of the Recursive Architecture}
+The performance of the Latent Variable Reconstruction depends on two critical hyperparameters: the memory decay factor $\gamma$ and the Monte Carlo sampling scale $N$. The experimental results regarding model accuracy and convergence are presented in Figure \ref{fig:decay_sample_sensitivity}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{imgs/Robust_Analysis.png}
+    \vspace{-0.2cm}\vspace{-0.2cm}
+    \caption{\textbf{Robustness Analysis of Memory Decay and Sample Size.}}
+    \label{fig:decay_sample_sensitivity}
+\end{figure}
+
+The analysis reveals that the model exhibits excellent robustness within a broad High Robustness Zone. Specifically, when $\gamma$ is situated between 0.70 and 0.85, the Top-1 accuracy consistently remains above 98\% while the inference variance stays at a minimal level. This stability demonstrates that the high performance of the framework is inherently derived from its Bayesian recursive architecture.
+
+Regarding the sampling scale, the Posterior Concentration Index indicates that the model effectively converges when $N$ reaches 10,000. To ensure high precision while managing computational overhead, we selected $N = 50,000$ for all primary simulations, as this value lies within the stable plateau of the convergence curve.
+
+\subsection{Marginal Utility of Judge Rationality}
+To determine the optimal feasible region and quantify the marginal utility of the Judges' Save mechanism, the model executes Monte Carlo sampling. We define the Fairness Gain, denoted as $\Delta\gamma$, as the expected reduction ratio of the system's overall Elite Deviation Loss after introducing the stochastic intervention mechanism:
+
+\vspace{-0.2cm}\vspace{-0.2cm}
+\begin{equation}
+    \Delta\gamma(\beta) = \frac{\mathbb{E}[\mathcal{L}_{NoSave}] - \mathbb{E}[\mathcal{L}_{WithSave}(\beta)]}{\mathbb{E}[\mathcal{L}_{NoSave}]}
+    % \vspace{-0.2cm}
+\end{equation}
+This metric quantitatively describes the extent to which the non-deterministic intervention mechanism can correct the structural bias of the competition format and elevate the upper bound of systemic fairness as the rationality coefficient evolves.
+
+Table \ref{tab:beta_analysis} presents the impact of different rationality levels on system fairness.
+
+\vspace{-0.2cm}
+\begin{table}[htbp]
+    \centering
+    \caption{\textbf{Impact of Judge Rationality Coefficient $\beta$ on Fairness Improvement}}
+    \begin{tabular}{cccc}
+        \toprule
+        \textbf{Scenario} & \textbf{Description} & \textbf{Improvement} & \textbf{Interpretation} \\
+        \midrule
+        $\beta=0.5$ & Random or Biased Judge & -7.57\% & Mechanism Failure.\\
+        \midrule
+        $\beta=1.5$ & Moderate Rationality & +22.94\% & Significant Improvement. \\
+        \midrule
+        $\beta=3.0$ & Strict Meritocracy & +47.25\% & High Efficiency.\\
+        \bottomrule
+    \end{tabular}
+    \label{tab:beta_analysis}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{imgs/save.png}
+    \vspace{-0.2cm}\vspace{-0.2cm}
+    \caption{\textbf{Save Probability and Fairness Improvement.}}
+    \label{fig:beta_sensitivity}
+\end{figure}
+
+The results indicate that a low rationality coefficient, such as when $\beta$ equals 0.5, leads to a negative fairness improvement of -7.57\%, implying that the intervention acts as noise rather than a corrective measure. Conversely, a high rationality coefficient, such as when $\beta$ equals 3.0, yields a substantial fairness improvement of 47.25\%, confirming that a strict meritocratic intervention is essential for optimizing the competition structure.
+
+\subsection{Comparative Sensitivity of Scoring Features}
+To further validate the conclusions derived in Task 3 regarding feature influence, we performed a scaling analysis on judge scores and fan votes to observe changes in the predicted probability of advancement. The comparative sensitivity is visualized in Figure \ref{fig:feature_sensitivity}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{imgs/sensitivity_analysis.png}
+    \vspace{-0.2cm}\vspace{-0.2cm}
+    \caption{\textbf{Sensitivity Analysis of Promotion Results.}}
+    \label{fig:feature_sensitivity}
+\end{figure}
+
+The experimental data indicates that the sensitivity of fan votes is approximately 0.1466, whereas the sensitivity of judge scores is notably lower at 0.1037. As illustrated by the steeper trajectory of the green curve representing audience support compared to the purple curve representing technical scoring, the competition outcomes are structurally more susceptible to fluctuations in public popularity. This confirms that while technical merit is critical, the system is primarily driven by the volatility of public support rather than incremental changes in professional evaluation.
+% -------------- 6. Model Evaluation --------------
+\section{Model Evaluation}
+\subsection{Strengths}
+\begin{itemize}
+    \item \textbf{Mechanism-Driven Counterfactual Inference.} The Hybrid Inference Architecture incorporates a rigorous counterfactual inference framework driven by mechanism rules. By innovatively employing Variational Inference to constrain the parameter search space and transforming competition rules into hard constraints via Monte Carlo Rejection Sampling, the model transcends traditional linear regression limitations. This approach yields an exceptional Top-1 accuracy of 99.66\%.
+    
+    \item \textbf{Dynamic Uncertainty Quantification via Bayesian Framework.} Distinct from deterministic models that provide only point estimates, our model utilizes Dirichlet priors and Bayesian recursive updates to achieve a probabilistic representation of outcomes. This characteristic ensures robust performance and high stability even under conditions of data sparsity in the early stages or high volatility during the finals.
+    
+    \item \textbf{Non-linear Feature Attribution.} The integration of XGBoost and SHAP in the feature analysis model effectively captures complex non-linear interactions among features. This method provides precise quantitative attribution for each variable, overcoming the interpretability limitations inherent in traditional linear models when facing complex mechanistic dynamics.
+\end{itemize}
+
+\subsection{Weaknesses}
+\begin{itemize}
+    \item \textbf{Efficiency Degradation in Rare Events.} While the Monte Carlo simulation employs a sample size of 50,000, the efficiency of Rejection Sampling degrades during low-probability events. Specifically, when high-scoring contestants face elimination in the late stages, the feasible solution space shrinks drastically, leading to a significant drop in the acceptance rate and the generation of numerous invalid samples.
+    
+    \item \textbf{Error Propagation from Proxy Variables.} Due to the absence of ground-truth data for fan votes, the analysis relies on the estimated vote shares from preceding steps as input. This dependency on proxy variables introduces a risk of error propagation, where initial prediction inaccuracies may accumulate and potentially impact the precision of the downstream causal analysis.
+\end{itemize}
+
+% -------------- 7. Conclusion --------------
+\section{Conclusion}
+
+This study developed a robust predictive framework integrating Variational Inference and Bayesian recursive updates. By employing Monte Carlo rejection sampling, the model achieved a 99.66\% Top-1 accuracy and a Posterior Concentration Index of 0.9864 across 34 seasons, effectively capturing time-varying popularity dynamics with high statistical certainty.
+
+Comparative analysis of competition structures reveals that the Rank-based system superiorly suppresses voting noise and protects technical merit through ordinal processing, whereas the Percentage-based format increases the risk of systemic injustice. Furthermore, stochastic interventions like the Judges' Save mechanism are found to be institutionally legitimate only when governed by rigorous, capability-based thresholds.
+
+Feature attribution via XGBoost and SHAP demonstrates that over 80\% of the impact from celebrity age and partner expertise is mediated indirectly through technical scores. Notably, audience influence exerts a decision weight nearly four times that of professional evaluations, with distinct feature sensitivities observed between the public and expert judges.
+
+To address these imbalances, we proposed the Fairness-Enhanced Hybrid Scoring System (FEHSS). By utilizing residual decoupling and time-varying geometric weighting, FEHSS minimizes single-dimension speculation and dynamically balances competitive integrity with commercial entertainment value, significantly enhancing the stability and rationality of the competition format.
+
+% -------------- 参考文献 --------------
+\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{99}
+
+\setlength{\itemsep}{0pt}
+\setlength{\parsep}{0pt}
+
+\bibitem{1} Arrow, K. J. (2012). \textit{Social Choice and Individual Values} (3rd ed.). Yale University Press. ISBN: 978-0300179316. 
+
+\bibitem{2} Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., \& Rubin, D. B. (2013). \textit{Bayesian Data Analysis} (3rd ed.). CRC Press. ISBN: 978-1439840955.
+
+\bibitem{3} Aitchison, J. (1986). \textit{The Statistical Analysis of Compositional Data}. Chapman and Hall. ISBN: 978-1930665781.
+
+\bibitem{4} Chen, T., \& Guestrin, C. (2016). \textit{XGBoost: A Scalable Tree Boosting System}. Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. arXiv:1603.02754.
+
+\end{thebibliography}
+
+% \section{Memorandum to the Producers}
+\addcontentsline{toc}{section}{Memorandum}
+\newpage
+\begin{center}
+    {\Large \textbf{MEMORANDUM}}
+\end{center}
+\vspace{0.3cm}
+
+\begin{description}[style=multiline, leftmargin=3cm, font=\bfseries]
+    \item[TO:]  The Executive Production Team of \textit{Dancing with the Stars}
+    \item[FROM:] Team \# 2611883
+    \item[DATE:] February 1, 2026
+    \item[SUBJECT:] Strategic Recommendations for Integrating Judge and Fan Voting Mechanisms
+\end{description}
+
+\hrule height 1pt % 粗黑分隔线
+\vspace{0.5cm}
+
+Dear Executive Production Team,
+
+Following an extensive causal analysis of data spanning 34 seasons, we are pleased to present our strategic insights into the scoring dynamics of \textit{Dancing with the Stars}. Our research highlights a significant systemic imbalance where audience influence currently outweighs professional evaluation by nearly fourfold. This trend largely stems from the narrow range of judges' scores, which typically cluster between 6 and 9 points. This lack of statistical differentiation in professional scores leaves the final outcome almost entirely dependent on public popularity, rendering the current percentage-based system hypersensitive to fan volatility.
+
+To address these challenges and restore competitive integrity, we recommend a fundamental shift in the scoring paradigm. We propose abolishing the current percentage-based additive logic in favor of a \textbf{Rank-based Multiplier System}. By calculating the final score as the product of the Judge Rank and the Audience Rank, the mechanism will naturally penalize contestants who rely solely on one dimension while rewarding well-rounded performers. This geometric approach ensures that the pursuit of technical excellence remains as vital as public charisma.
+
+Furthermore, we suggest adopting \textbf{Dynamic Weight Management} to better align with the season's narrative arc. In the initial audition phases, prioritizing technical quality is crucial; therefore, we recommend setting the judges' weight at 70 percent. As the competition progresses, this weight should gradually decrease to empower the audience, reaching 40 percent in the final stage to maximize viewer engagement and commercial resonance.
+
+Regarding the \textbf{Judges' Save} mechanism, we advise establishing a hard activation threshold to ensure transparency and fairness. This power should only be exercised when the professional score difference between the bottom two contestants exceeds a margin of 5 percent. In cases where the technical disparity is negligible, deference to the popular vote preserves the program’s democratic credibility. Additionally, we encourage a shift in live commentary from emotional rhetoric to precise technical feedback, clearly articulating specific deduction items such as footwork errors to educate the audience.
+
+Finally, our analysis indicates that the struggle of older contestants stems primarily from physiological constraints affecting technical scores rather than viewer bias. Similarly, the value of elite partners lies in their pedagogical ability to elevate a celebrity's technical performance. These insights suggest that structural reforms, rather than casting changes, are the key to balancing the playing field.
+
+We believe these strategic adjustments will foster a more balanced, transparent, and captivating competitive environment, ensuring \textit{Dancing with the Stars} continues to set the standard for excellence in reality competition.
+
+Sincerely,
+
+Team \# 2611883
+
+
+
+
+% -------------- AI使用报告 --------------
+\newpage
+\addcontentsline{toc}{section}{AI Use Report}
+\AImatter
+\begin{ReportAiUse}{9}
+
+\bibitem{AI1}
+\textbf{Google Gemini (Feb 2026 Version, Gemini 3.0 Pro)}\\
+\textbf{Query}: “We are modeling the latent fan vote shares as a Dirichlet distribution since they sum to 1. However, we are struggling to formulate the likelihood function for the inverse problem where only the rank-based elimination result is observed. Could you propose a mathematical framework to define the posterior probability $P(\text{Votes} | \text{Elimination})$ using Bayesian inference?”
+
+\vspace{0.1cm}
+\textbf{Output}: 
+To address the inverse problem of reconstructing latent fan votes from observed elimination results, we can formulate a Bayesian framework where the elimination outcome acts as a hard constraint on the simplex space. Here is the proposed mathematical formulation:
+
+\subsubsection*{1. Prior Distribution}
+Let $\mathbf{v}_t = (v_1, v_2, \dots, v_n)$ represent the vector of fan vote shares for $n$ contestants at week $t$. Since $\sum v_i = 1$, we assume a Dirichlet prior parameterized by $\boldsymbol{\alpha}$:
+\[
+\mathbf{v}_t \sim \text{Dirichlet}(\boldsymbol{\alpha})
+\]
+where $\boldsymbol{\alpha}$ can be uniform ($\alpha_i = 1$) for an uninformative prior or weighted based on previous weeks.
+
+\subsubsection*{2. Likelihood Function (Hard Constraint)}
+The observation $E_{obs}$ (e.g., "Contestant $k$ was eliminated") is a deterministic outcome of the aggregation rule $R(\mathbf{v}_t, \mathbf{s}_t)$, where $\mathbf{s}_t$ denotes the known judges' scores. The likelihood is therefore an indicator function $\mathbb{I}(\cdot)$:
+\[
+P(E_{obs} | \mathbf{v}_t, \mathbf{s}_t) = \mathbb{I}\left( \text{Rule}(\mathbf{v}_t, \mathbf{s}_t) \to E_{obs} \right)
+\]
+This function equals 1 if the vote vector $\mathbf{v}_t$ combined with $\mathbf{s}_t$ results in the observed elimination, and 0 otherwise.
+
+\subsubsection*{3. Posterior Distribution}
+Applying Bayes' Theorem, the posterior probability density is:
+\[
+P(\mathbf{v}_t | E_{obs}) = \frac{P(E_{obs} | \mathbf{v}_t) \cdot P(\mathbf{v}_t)}{\int P(E_{obs} | \mathbf{v}) P(\mathbf{v}) d\mathbf{v}} \propto \mathbb{I}(\text{Consistent}) \cdot \text{Dirichlet}(\boldsymbol{\alpha})
+\]
+This represents a \textbf{Truncated Dirichlet Distribution}, defined only over the convex polytope within the simplex where the rank constraints hold.
+
+\subsubsection*{4. Numerical Solution: Rejection Sampling}
+Since the normalization constant (the integral over the polytope) is analytically intractable, we recommend a Monte Carlo simulation approach:
+\begin{enumerate}
+    \item \textbf{Sample:} Draw a candidate vector $\mathbf{v}^{(i)} \sim \text{Dirichlet}(\boldsymbol{\alpha})$.
+    \item \textbf{Evaluate:} Compute the total scores using $\mathbf{v}^{(i)}$ and $\mathbf{s}_t$ under the specific season's rules (Rank vs. Percentage).
+    \item \textbf{Filter:} Accept $\mathbf{v}^{(i)}$ if it strictly reproduces the historical elimination result $E_{obs}$; otherwise, reject it.
+\end{enumerate}
+The collection of accepted samples $\{\mathbf{v}^{(1)}, \dots, \mathbf{v}^{(M)}\}$ serves as an empirical approximation of the posterior distribution $P(\mathbf{v}_t | E_{obs})$.
+
+\bibitem{AI2}
+\textbf{Google Gemini (Feb 2026 Version, Gemini 3.0 Pro)}
+
+\textbf{Query}: “Optimize the Python code for our counterfactual simulation. The current nested loop implementation for calculating the 'Survival Rate' across 10,000 iterations is computationally expensive ($O(N^2)$). Can you suggest a vectorized solution using numpy broadcasting to reduce runtime?”
+
+\vspace{0.1cm}
+\textbf{Output:}
+Yes, we can significantly reduce the runtime by replacing the Python-level iteration with NumPy's broadcasting mechanism. This shifts the computational load to optimized C-level matrix operations. Below is the vectorized implementation:
+
+\begin{itemize}
+    \item \textbf{Broadcasting Strategy:} Treat the simulated fan votes as a matrix $\mathbf{F}$ of shape $(N_{sim}, N_{contestants})$ and the judges' scores as a vector $\mathbf{J}$. NumPy will automatically broadcast $\mathbf{J}$ across all simulation rows.
+\end{itemize}
+
+\begin{verbatim}
+import numpy as np
+
+def calculate_survival_vectorized(judge_scores, fan_vote_samples):
+    """
+    judge_scores: array of shape (n_contestants,)
+    fan_vote_samples: matrix of shape (n_simulations, n_contestants)
+    """
+    # 1. Broadcasting Addition
+    # Dimensions: (1, N) + (Sims, N) -> (Sims, N)
+    total_scores = judge_scores[None, :] + fan_vote_samples
+
+    # 2. Vectorized Ranking
+    # argsort twice transforms scores into 0-indexed ranks
+    # axis=1 performs ranking within each simulation independently
+    ranks = np.argsort(np.argsort(total_scores, axis=1), axis=1)
+
+    # 3. Boolean Mask for Survival
+    # Assuming Bottom 2 are at risk (ranks 0 and 1)
+    # The condition returns a boolean matrix of shape (Sims, N)
+    is_safe_matrix = (ranks >= 2)
+
+    # 4. Compute Survival Rate
+    # Averaging along axis 0 (across simulations)
+    survival_rates = np.mean(is_safe_matrix, axis=0)
+
+    return survival_rates
+\end{verbatim}
+
+\textit{Performance Note:} This approach reduces the complexity from iterative $O(K \cdot N)$ to a vectorized operation that leverages BLAS optimization, resulting in a speedup of approximately $100\times$ for $10,000$ iterations.
+
+\bibitem{AI3}
+\textbf{Google Gemini (Feb 2026 Version, Gemini 3.0 Pro)}
+
+\textbf{Query}: “In our XGBoost model, we are observing high feature importance for 'Judge Score', but we need to distinguish between global importance and local interaction effects. Please clarify the specific advantages of using SHAP (SHapley Additive exPlanations) values over standard 'Gain' or 'Cover' metrics for interpreting this specific non-linear decision boundary.”
+
+\vspace{0.1cm}
+\textbf{Output:}
+
+Standard metrics like 'Gain' or 'Cover' only provide a global summary of feature importance, often masking the complex underlying dynamics. For your non-linear competition model, SHAP offers three critical advantages:
+
+\begin{enumerate}
+    \item \textbf{Local Explanation \& Directionality:} Unlike 'Gain', which is a magnitude-only scalar, SHAP values are assigned to every specific instance. This allows you to see not just \textit{that} 'Judge Score' is important, but \textit{how} it behaves for specific contestants (e.g., distinguishing whether a low judge score is fatal or recoverable).
+
+    \item \textbf{Decoupling Interactions:} SHAP values are additive ($\phi_0 + \sum \phi_i = f(x)$). This property allows us to isolate the marginal contribution of a feature. By plotting SHAP Dependence Plots, you can visually observe interaction effects—for instance, seeing exactly how the influence of 'Fan Votes' changes when 'Judge Scores' drop below a certain threshold.
+
+    \item \textbf{Consistency:} 'Gain' can be inconsistent; increasing a feature's true impact in the model can paradoxically lower its Gain score depending on tree structure. SHAP is derived from cooperative game theory (Shapley values), guaranteeing mathematical consistency, which is crucial when validating the fairness of your model's attribution.
+\end{enumerate}
+
+
+
+\end{ReportAiUse}
+
+\end{document}

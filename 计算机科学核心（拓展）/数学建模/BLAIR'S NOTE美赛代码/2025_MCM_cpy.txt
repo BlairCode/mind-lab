@@ -1,0 +1,1002 @@
+%% This is file 'MCM.tex'
+%% Author: BLAIR
+%% The original source files were:
+%% 'mcmthesis-demo.tex'
+%% Mode: "TeX:UTF-8"
+%% This is a generated file for the MCM/ICM template.
+
+\documentclass{mcmthesis}
+\mcmsetup{tstyle=\color{red}\bfseries,
+        tcn = 2506065, problem = A,
+        sheet = true, titleinsheet = true, 
+        keywordsinsheet = true,
+        titlepage = false, abstract = false}
+
+  %\usepackage{times}
+  \usepackage{newtxtext,newtxmath}
+  %\usepackage{palatino}
+  %\usepackage{txfonts} %CTeX
+\usepackage{tocloft}  % 导入 tocloft 宏包
+\setlength{\cftbeforesecskip}{0.2em}
+\setlength{\cftbeforesubsecskip}{0.15em}
+\setlength{\cftbeforesubsubsecskip}{0.1em}
+\usepackage{setspace}
+
+\renewcommand{\cftsecleader}{\cftdotfill{\cftsecdot}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftsubsecdot}}
+\renewcommand{\cftsubsubsecleader}{\cftdotfill{\cftsubsubsecdot}} 
+
+\usepackage{indentfirst}
+\usepackage{lipsum}
+\renewcommand{\abstractname}{\textbf{\Large Abstract}}
+
+\title{\textbf{Silent Witnesses of Human Activity:\\Wear and Tear Traces on Stairs}}
+\begin{document}
+\begin{abstract}
+\setstretch{0.9}
+{\setlength{\parskip}{0.15em} 
+
+Stairs, as fundamental architectural elements, bear the imprints of human activity over time. Due to the complexities arising from material properties, environmental factors, and the lack of precise historical records, we propose a \textbf{multi-scale coupled wear pattern recognition system} to assist archaeologists in analyzing the historical use of staircases. The system comprises three models:
+
+First, we establish \textbf{Model I: Theoretical Wear Volume Calculation Model}, based on the classical \textbf{Archard equation} in \textbf{abrasive wear}, to compute the theoretical wear volume of staircases. Using data obtained from UMT-TriboLab and ABAQUS's Umeshmotion finite element simulation, combined with the differential extension of the Archard equation, we determine the material-specific wear coefficient. Additionally, we estimate the impact of precipitation on wear using \textbf{KINDIS's generalized dissolution law}.
+\begin{itemize}
+  \setlength{\itemsep}{0.5em}  % 列表项之间的间距
+  \setlength{\parskip}{0.2em}  % 列表项内部段落的间距
+  \setlength{\parsep}{0pt}     % 列表项和段落之间的额外间距
+  \setlength{\topsep}{0.3em}   % 列表与上下文的间距
+    \item Age Estimation and Usage Frequency: We estimated the age of the stairs' usage based on the thickness of their weathering layers and the \textbf{Arrhenius chemical reaction rate formula}. Then, using the actual wear volume of the stairs and the integral form of the Archard equation, we calculated their usage frequency.
+    \item Repair and Material Origin: By sampling wear depths across various staircases and applying \textbf{K-means++} clustering, we establish criteria to determine repair history. To identify material origin, we compared the theoretical wear volume of the material specified by archaeologists with the actual wear volumes, setting evaluation thresholds.
+\end{itemize}
+
+Next, we develop \textbf{Model II: Wear Distribution Analysis Model}, building on Model I. Through \textbf{gait analysis}, we have identified the distinct impacts of walking on the front and back areas of stairs, as well as the tendency for individuals to prefer walking alone in the center of the staircase.
+\begin{itemize}
+  \setlength{\itemsep}{0.5em}  % 列表项之间的间距
+  \setlength{\parskip}{0.2em}  % 列表项内部段落的间距
+  \setlength{\parsep}{0pt}     % 列表项和段落之间的额外间距
+  \setlength{\topsep}{0.3em}   % 列表与上下文的间距
+    \item Directional Preference and Parallel Walking: Using wear volume data from the front and rear sections of stairs, we compute upward and downward movement frequencies and construct an evaluation indicator. By fitting wear volume distribution curves using the \textbf{differential method} and \textbf{least squares}, and analyzing maxima, we estimate the number of individuals walking abreast.
+\end{itemize}
+
+Finally, recognizing that surface \textbf{smoothness} reflects pedestrian flow intensity, we establish \textbf{Model III: Surface Smoothness Recognition Model}. Quantifying smoothness using \textbf{gradient} magnitude, we employ \textbf{computer vision} techniques such as \textbf{grayscale conversion} and the \textbf{Sobel operator} to calculate average gradients, assessing staircase usage.
+
+% We quantify smoothness using gradient magnitude and apply \textbf{grayscale conversion} along with the \textbf{Sobel operator} from \textbf{computer vision} to RGB images to calculate the average gradient magnitude of the staircase surface, enabling an assessment of its usage patterns.
+
+A sensitivity analysis of wear coefficients under varying friction conditions and normal loads demonstrates that the model exhibits robust interference resistance. Under dry and wet friction conditions, wear coefficients remain stable within specific load ranges, with small standard deviations, further validating the stability and reliability of our model.
+}
+\end{abstract}
+
+\begin{keywords}
+Archard equation, Abrasive wear, Finite element analysis, Computer vision, Historical preservation
+\end{keywords}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Introduction}\subsection{Background}
+
+Stairs, though simple, serve as powerful witnesses to the passage of time, bearing the marks of countless human activities. In cities like Jerusalem, where ancient paths hold deep historical and spiritual significance, these marks become records of cultural and communal life. Even the most durable materials, such as stone, are gradually shaped by the relentless rhythm of footsteps, with wear patterns capturing the echoes of human presence over centuries.
+
+For example, the prominent wear along the central portions of steps in ancient temples and churches reflects frequent use, while the less-eroded edges indicate areas of minimal traffic. However, these patterns are not solely shaped by foot traffic—material composition, environmental factors, and periodic renovations also influence them. The challenge of interpreting these patterns is further compounded by the lack of precise historical records, particularly in cases where structures have undergone alterations over time.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=10cm]{image/step.png} 
+    \caption{Visualization of step wear due to prolonged usage.\AIcite{AI3}}
+    \label{fig:ai}
+\end{figure}
+
+Interpreting these wear patterns reveals more than just the age of the stairs. It provides insights into how people navigated these spaces, the intensity and rhythm of their movements, and whether the stairs were used consistently or during specific periods of heightened activity. Through the careful analysis of these subtle traces, we uncover a richer and more complex narrative of human history, preserved in stone.
+
+\subsection{Problem Restatement}
+\begin{itemize}
+    \item Develop a model that can determine the usage age of a staircase and estimate its usage frequency or daily foot traffic based on its wear characteristics.
+
+    \item Analyze the horizontal surface wear of the staircase to infer whether people predominantly move upward or downward during its usage.
+
+    \item For wider staircases, multiple individuals often walk side by side. Estimate the typical number of people walking abreast based on the wear distribution of the staircase.
+
+    \item Over time, severe wear may occur on staircases due to prolonged use or harsh environmental conditions, leading to repairs. Assess whether a staircase has been repaired in the past based on its wear patterns.
+
+    \item Recognize that different staircases may be constructed from varying materials. Determine the material origin of a staircase based on its wear characteristics.
+
+    \item Due to differences in geographical location, a staircase may experience either high foot traffic over a short period or consistently low traffic over an extended period. Identify which of these scenarios applies to a staircase based on its surface wear patterns.
+\end{itemize}
+
+\subsection{Our Work}
+In this study, we are tasked with developing a wear model to infer the usage patterns and historical information of staircases. The following approach was adopted:
+
+\begin{enumerate}
+    \item \textbf{Determining the parameters of the Archard equation under specific conditions using the UMT-TriboLab experiment.} We estimate the staircase's age based on the weathering layer thickness and the Arrhenius chemical reaction rate, which provides insights into the usage frequency.
+    
+    \item \textbf{Analyzing human gait behavior during ascent and descent.} Using the KINDIS dissolution law, we account for the corrosive wear under natural conditions to reduce error.
+    
+    \item \textbf{Fitting the wear volume distribution curve of the staircase surface using the least squares method.} This step enables us to understand the wear patterns across the staircase.
+    
+    \item \textbf{Collecting data on the wear depth of non-repaired and repaired staircases.} We employ the K-means++ clustering algorithm to establish criteria for distinguishing between repaired and non-repaired staircases.
+    
+    % \item \textbf{Conducting finite element simulations using the Umeshmotion user subroutine in ABAQUS.} This allows us to calculate the wear coefficient under different conditions and scenarios.
+    \item \textbf{Using the Umeshmotion subroutine in ABAQUS for finite element simulations.} This enables precise wear coefficient calculations under various conditions.
+    
+    \item \textbf{Performing decolorization and high-pass filtering (Sobel operator) on the staircase floor plan.} This process yields the average gradient size of the staircase surface, which is then used to assess the level of foot traffic.
+\end{enumerate}
+
+\section{Assumptions}
+
+\begin{itemize}
+    \item \textbf{The current maximum length, width, and height of the steps are approximated as their original dimensions before wear.}  
+    
+    \textit{Justification:} Since the original dimensions are unknown, the current maximum measurements are used to estimate the total wear volume from construction to the present.
+
+    \item \textbf{All abrasive wear is assumed to occur under dry friction conditions.}  
+    
+    \textit{Justification:} As friction conditions vary and user-specific conditions are indeterminable, a uniform friction assumption ensures consistency in the wear coefficient.
+
+    \item \textbf{Structured light technology accurately captures the staircase's external features, including surface roughness and wear patterns.}  
+    
+    \textit{Justification:} To simplify calculations, we assume negligible error in measurements using specified tools, avoiding discrepancies caused by varying measurement methods.
+
+    \item \textbf{Individuals' foot placement areas are assumed to be approximately similar during both ascent and descent.}  
+    
+    \textit{Justification:} Variations in foot placement make walking preferences difficult to infer. Therefore, we assume uniformity in landing regions for typical usage.
+\end{itemize}
+
+\section{Notations}
+The primary notations utilized in this paper are summarized in Table~\ref{tab:notations}.
+\begin{center}
+\begin{tabular}{ c | p{0.75\textwidth} }
+    \hline
+    \textbf{Symbols} & \textbf{Description} \\  
+    \hline
+    \( W \) & Wear volume generated during a single use of the staircase. \\
+    \( K \) & Wear coefficient of the material. \\
+    \( F \) & Normal load on the contact surface between objects. \\
+    \( S \) & Relative sliding distance between objects. \\
+    \( E \) & Contact area between objects. \\
+    \( H \) & Hardness of the material. \\
+    \( V \) & Total wear volume. \\
+    \( A \) & Service age of the staircase. \\
+    \( n_s \) & Usage frequency or traffic flow of the staircase. \\
+    \( r \) & Weathering reaction rate. \\
+    \( h \) & Weathering layer thickness. \\
+    \( k \) & Pre-factor or chemical reaction rate constant. \\
+    \( E_a \) & Activation energy of the weathering reaction. \\
+    \( R \) & Gas constant, approximately 8.314 J/mol·K. \\
+    \( T \) & Temperature in Kelvin. \\
+    \( V_m \) & Specific dissolution rate. \\
+    \( K_m \) & Specific dissolution coefficient. \\
+    \( S_m \) & Interfacial area between the mineral and the water solution. \\
+    \( Q_m \) & Particle activity product of the solution during the reaction. \\
+    \( a_{H^+} \) & Proton activity in the aqueous solution. \\
+    \( c \) & A factor influencing reaction rate sensitivity to saturation. \\
+    \( p \) & Pressure in Pascals. \\
+    \( N \) & Pixel value. \\
+    \( \text{Gray} \) & Grayscale value. \\
+    \hline
+\end{tabular}
+\label{tab:notations}
+\end{center}
+
+% \section{Model preparation}
+% \subsection{The data}
+% \subsubsection{Data collection}
+% \subsubsection{Data pre-processing}
+% \subsubsection{Data visualization}
+% \subsubsection{Descriptive statistical analysis of the data}
+% \subsection{Model theory}
+\section{Models}
+\subsection{Stair Usage Frequency Analysis}
+Estimating stair usage frequency involves analyzing cumulative wear patterns, as direct pedestrian flow data is unavailable. Assuming a constant average usage rate is a practical approach, as long-term foot traffic fluctuations balance out, leaving wear patterns that reflect overall usage intensity. Durable materials like granite, minimally affected by short-term load variations, exhibit uniform wear over time. This assumption provides a simple yet reliable model, linking wear patterns to long-term usage while aligning with historical and material conditions.
+
+\subsubsection{Wear Volume Estimation}
+Stair wear results from several mechanisms, including abrasive, fatigue, adhesive, and corrosive wear \cite{1}, with abrasive wear being the most significant. In high-footfall areas, repeated friction between footwear and the stair surface accelerates material degradation. The intensity of abrasive wear is influenced by factors such as material hardness, footwear type, and environmental conditions like moisture, dirt, and temperature fluctuations. Over time, this cumulative effect compromises both the functionality and appearance of stairs, particularly in high-traffic environments.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=11cm]{image/2-way.jpg} 
+    \caption{Abrasive Wear Mechanism}
+    \label{fig:aa}
+\end{figure}
+
+Fatigue wear, caused by repeated loading cycles and crack propagation, plays a secondary role and is harder to assess without destructive testing. Its effects depend on the material's microstructure and stress distribution, which vary across stair designs. Adhesive and corrosive wear, resulting from microscopic welding and chemical reactions, have minimal impact in typical stair usage, especially in sheltered environments. Thus, while these mechanisms contribute to degradation, their significance is less than that of abrasive wear.
+
+Given the strong correlation between abrasive wear and stair usage, we apply the Archard equation to quantify wear volume. This equation links wear volume to material properties, load, and sliding distance, providing insights into the long-term durability of stair materials. The Archard equation is expressed as follows:
+
+
+\begin{equation}
+    W = K \cdot \frac{F \cdot S}{H}
+\label{eq:1}
+\end{equation}
+
+% where:
+% \begin{itemize}
+%     \item \(W\): Wear volume,
+%     \item \(K\): Wear coefficient,
+%     \item \(F\): Normal load,
+%     \item \(S\): Sliding distance,
+%     \item \(H\): Material hardness.
+% \end{itemize}
+
+The wear coefficient (\(K\)) and material hardness (\(H\)) are intrinsic material properties influenced by composition and surface smoothness. The normal load (\(F\)), representing the pressure on the stairs, includes static and dynamic components. The static load assumes an average individual weight of 65 kg, while the dynamic load coefficient, typically 0.8, accounts for additional forces from acceleration or impact. These variations are critical for accurately estimating wear volume. The sliding distance (\(S\)) is set at 1 mm, matching the average sliding distance during walking.
+
+By determining \( K / H \), the wear volume for a single staircase use can be calculated using Archard's formula.
+
+As \( K / H \) varies with material, friction type, and applied pressure, experiments using the UMT-TriboLab testing machine help determine its value. These tests use an H13 steel ball (10 mm diameter) as the counterface\cite{2}. The mechanical properties of H13 steel are detailed in Table~\ref{tab:h13}.
+
+\begin{table}[h]
+\centering
+\caption{Mechanical Properties of H13 Steel}
+\label{tab:h13}
+\begin{tabular}{cccc}
+\hline
+Hardness (HRC) & Tensile Strength (MPa) & Yield Strength (MPa) & Impact Toughness (J/cm\(^2\)) \\ \hline
+58-62          & 1490.5                 & 1290.3               & 28.0                            \\ \hline
+\end{tabular}
+\end{table}
+
+We take granite as an example for wear testing, with the following parameter settings:
+
+\begin{table}[h]
+\centering
+\caption{Wear Testing Parameters for Granite}
+\label{tab:testing_parameters}
+\begin{tabular}{cc}
+\hline
+\textbf{Parameter}   & \textbf{Value} \\ \hline
+Normal Load F_n      & 2 N\\ \hline
+Reciprocating Displacement D & 4 mm          \\ \hline
+Number of Cycles N & 5000 times          \\ \hline
+Counterface          & H13 Steel Ball \\ \hline
+\end{tabular}
+\end{table}
+
+After 5000 cycles of wear testing, the average wear volume of granite was measured to be approximately \(6.40 \times 10^{-3} \, \text{mm}^3\), with the maximum average wear depth reaching 4.0 μm. During the wear process, the contact surface pressure of granite was approximately 338 MPa. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm]{photo/Q1_pass_3.png} 
+    \caption{The relationship between depth and width.}
+    \label{fig:aa}
+\end{figure}
+
+From this experiment, we have obtained the wear volume, depth, and contact surface pressure of granite under known conditions. We now proceed to derive the value of \( \frac{K}{H} \) in the Archard equation using the above data.
+
+To better adapt the Archard model to localized contact conditions, we need to extend it. Let the differential element of the contact area at any position be \( dE \), the small increment of wear volume be \( dV \), the normal load be \( dF \), and the small increment of sliding distance be \( dS \). The differential form of the Archard model can thus be expressed as:
+
+\begin{equation}
+    \frac{dW}{dS} = \frac{K}{H} dF
+\end{equation}
+
+Let us divide both sides of the equation by \( dE \), we obtain:
+\begin{equation}
+    \frac{dW}{dSdE} = \frac{K}{H} \frac{dF}{dE}
+\end{equation}
+
+Here, \( dh = \frac{dV}{dE} \), which represents the small increment of wear depth, and \( p = \frac{dF}{dE} \), which is the pressure on the small area. Therefore, the equation can be expressed as:
+\begin{equation}
+    \frac{dh}{ds} = \frac{k}{H} P
+\end{equation}
+
+Utilizing the Archard wear model above, which is driven by frictional forces acting on the stair surface, We can calculate the wear volume \(w\) for a single.
+
+To estimate the cumulative wear over the stair’s lifespan(\(T\)), we integrate the wear volume per use (\(w\)) across time, accounting for the variable number of users. The total surface wear volume \(V\) is thus given by:
+
+\begin{equation}
+    V = \int_{0}^{T} w \cdot n(t) \, dt
+\label{eq:2}
+\end{equation}
+
+By integrating over the staircase's entire lifespan, the model quantifies total wear volume, linking usage patterns to surface deterioration. This approach not only provides a quantitative understanding of wear but also connects the stair’s historical usage frequency with its material degradation, offering valuable insights into the conditions and intensity of its use.
+
+\subsubsection{Weathering Analysis}
+Accurately estimating the usage frequency of stairs requires a robust method to analyze structural changes over time. One such method is evaluating the degree of weathering on specific structural elements. In this study, we focus on the vertical edge of the stair (the section adjacent to the wall), as it is less affected by mechanical wear and provides a stable and reliable basis for assessing weathering.
+
+The age of the stairs (\(A\)), can be determined by examining the thickness of the weathered layer (\(h\)) and the weathering rate (\(v\)). This relationship is expressed as:
+
+\begin{equation}
+    A = \frac{h}{v}
+\end{equation}
+
+Here, \(h\) can be measured on-site using non-destructive techniques such as laser scanning, surface microscopy, or high-resolution digital imaging. These methods ensure precision and preserve the structural integrity of the stairs during analysis.
+
+The weathering reaction rate (\(r\)) depends on material properties and environmental conditions and can be modeled using the Arrhenius chemical reaction rate formula for chemical weathering \cite{3}:
+
+\begin{equation}
+    r = k \cdot e^{-\frac{E_a}{R T}}
+\end{equation}
+
+% where:
+% \begin{itemize}
+%     \item \(k\): Pre-exponential factor, representing the baseline reaction rate,
+%     \item \(E_a\): Activation energy of the weathering reaction, specific to the material,
+%     \item \(R\): Universal gas constant (\(8.314 \, \text{J/mol·K}\)),
+%     \item \(T\): Absolute temperature (in Kelvin).
+% \end{itemize}
+
+The parameters \(k\) and \(E_a\) can be obtained experimentally or sourced from material property databases. Integrating the weathering rate \(r\) with the measured thickness of the weathered layer \(h\) allows for accurate estimation of the stair’s age. 
+
+\subsubsection{Integrated Usage Analysis}
+Based on the proportions and activation energies of granite components, we estimate the activation energy to be 61 kJ/mol. Substituting this into the Arrhenius equation with a temperature of 298.15 K (25°C), we derive the relationship between ln \( r \) and ln \( k \) :
+
+\begin{equation}
+    ln\ r = ln\ k - 24.608
+\end{equation}
+
+The pre-factor for granite's weathering reaction is approximately \( 1 \times 10^7 \), resulting in a weathering rate of \( r = 2.051 \times 10^{-4} \, \text{s}^{-1} \). Multiplying the weathering rate by granite's weathering concentration gives a rate of \( v = 2.76 \times 10^{-4} \, \text{m/year} \).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{image/Q1_FLOW.png} 
+    \caption{Workflow for Stair Usage Frequency Estimation}
+    \label{fig:aa}
+\end{figure}
+
+%gazebo
+To verify the model, we sampled granite stairs at a local pavilion (built in 2006), with an average wear volume of \( 4.360 \times 10^{-5} \, \text{m}^3 \) and a vertical weathered layer thickness of \( 4.507 \times 10^{-3} \, \text{m} \). Official data indicates the pavilion's average daily usage is 460 people. 
+
+Using the theoretical weathering rate of granite obtained earlier, we calculate the theoretical age of the staircase as \( A = 16.33 \, \text{years} \). Applying the Archard equation, we determine the theoretical wear volume per use as \( W = 7.102 \times 10^{-12} \, \text{m}^3 \).  
+
+By dividing the actual wear volume of the staircase successively by \( W \) and \( A \), and taking half of the result, we compute the theoretical average daily pedestrian flow as approximately \( 498 \, \text{people/day} \). Evidently, this value closely aligns with the actual daily usage of the staircase.  
+
+\subsection{Directional Usage Patterns of Stairs}
+This section examines the directional usage patterns of stairs to determine whether they were primarily used for upward or downward movement, offering insights into historical traffic behavior and social dynamics.
+
+Each step's horizontal surface is divided into two regions: the inner edge (used during upward movement) and the outer edge (used during downward movement). Upward movement concentrates force on the ball and toes, causing greater wear on the inner edge, while downward movement increases wear on the outer edge\cite{4}. Figure~\ref{fig:landing} illustrates this distribution.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=10cm]{image/q2.png} 
+    \caption{Visualization of the landing position on the steps}
+    \label{fig:landing}
+\end{figure}
+
+By quantifying and comparing the degree of wear on the inner and outer edges, the relative frequencies of upward and downward movements can be inferred. This analysis integrates mechanical, environmental, and chemical factors to ensure robust and accurate results.
+
+\subsubsection{Key Factors Affecting Directional Usage}
+Several factors must be considered when evaluating directional wear:
+
+\begin{enumerate}
+    \item \textbf{Dynamic Load Coefficients:} Upward movement involves additional force from acceleration, while downward movement generates greater impact forces due to deceleration. These differences require separate calculations for $n_{\text{up}}$ and $n_{\text{down}}$ using Equations \ref{eq:1} and \ref{eq:2}.
+    
+    \item \textbf{Environmental Effects:} Rainfall significantly affects wear patterns. Water accumulates in pits on inner edges during upward movement, accelerating corrosive wear. Local precipitation data and material-specific properties are critical for accurate analysis. To account for trapped water, the duration of rainfall events is extended by one day when estimating corrosive wear.
+\end{enumerate}
+\subsubsection{Corrosive Wear Analysis for Granite}
+Granite, widely used in historical stair construction for its durability, serves as the focus of this study. Its mineral composition, detailed in Table~\ref{tab:granite_composition}, highlights the interplay of components that ensure longevity while making it susceptible to chemical weathering. This weathering, driven by rainwater and atmospheric carbon dioxide, forms the basis for analyzing corrosive wear patterns\cite{5}.
+
+\begin{table}[h]
+\centering
+\caption{Mineral Composition of Granite}
+\label{tab:granite_composition}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Mineral}       & \textbf{Volume Percentage (\%)} & \textbf{Molecular Formula} \\
+\hline
+Quartz                 & 35                              & SiO$_2$                   \\
+\hline
+Potassium Feldspar     & 20                              & KAlSi$_3$O$_8$            \\
+\hline
+Sodium Feldspar        & 25                              & NaAlSi$_3$O$_8$           \\
+\hline
+Calcium Feldspar       & 10                              & CaAl$_2$Si$_2$O$_8$       \\
+\hline
+Potassium Muscovite    & 3                               & KAl$_2$(AlSi$_3$O$_{10}$)(OH)$_2$ \\
+\hline
+Biotite                & 7                               & K(Mg$_{1.5}$Fe$_{0.5}$)(AlSi$_3$O$_{10}$)(OH)$_2$ \\
+\hline
+\end{tabular}
+\end{table}
+
+At $25^\circ\mathrm{C}$, the chemical composition of rainwater, shown in Table~\ref{tab:rains}, provides initial conditions for dissolution reactions.
+
+\begin{table}[h]
+\centering
+\caption{Chemical Composition of Initial Aqueous Solution ($\mu$Mol/Kg Water)}
+\label{tab:rains}
+\begin{tabular}{|ccccccccc|}
+\hline
+\textbf{K$^-$} & \textbf{Ca$^{2+}$} & \textbf{Mg$^{2+}$}  & \textbf{Fe$^{2+}$}  & \textbf{H$_4$SiO$_4$} & \textbf{SO$_4^{2-}$} & \textbf{Cl} & \textbf{Alkalinity} & \textbf{pH} \\
+\hline
+1.0 & 1.0 & 1.0 & 1.0 $\times$ 10$^{-6}$ & 1.0 & 1.0 & 4.3 & 0.1 & 5.16 \\
+\hline
+\end{tabular}
+\end{table}
+
+The dissolution reactions of key granite minerals are:  
+\[
+2\text{KAlSi}_3\text{O}_8 + 9\text{H}_2\text{O} + 2\text{H}^+ \rightarrow 2\text{K}^+ + 2\text{Al}_2\text{Si}_2\text{O}_5(\text{OH})_4 + 4\text{H}_2\text{SiO}_4
+\]
+\[
+2\text{NaAlSi}_3\text{O}_8 + \text{H}_2\text{O} + \text{CO}_2 \rightarrow 2\text{Na}^+ + 2\text{Al}_2\text{Si}_2\text{O}_5(\text{OH})_4 + 4\text{SiO}_2
+\]
+\[
+\text{CaAl}_2\text{Si}_2\text{O}_8 + 2\text{H}^+ + \text{H}_2\text{O} \rightarrow \text{Ca}^{2+} + \text{Al}_2\text{Si}_2\text{O}_5(\text{OH})_4
+\]
+
+The mineral dissolution rate is governed by:  
+\begin{equation}
+V_m = K_m S_m a_{\text{H}^+}^n (1 - Q_m/K_m),
+\end{equation}  
+
+where \((1 - Q_m/K_m)\) represents the saturation index. Table~\ref{tab:dissolution_rates} lists the dissolution rates of feldspar minerals at \(25^\circ\mathrm{C}\).
+
+\begin{table}[ht]
+\caption{Specific Dissolution Rates of Minerals at 25\textdegree C (mol/m\textsuperscript{2}/year)}
+\label{tab:dissolution_rates}
+\centering
+\begin{tabular}{|>{\raggedright\arraybackslash}m{5cm}|m{5cm}|}
+\hline
+\textbf{Mineral} & \textbf{Logkm} \\
+\hline
+Potassium Feldspar & -4.002 \\
+\hline
+Sodium Feldspar & -3.429 \\
+\hline
+Calcium Feldspar & -0.753 \\
+\hline
+\end{tabular}
+\end{table}
+
+The molar weight of the minerals are listed in the Table \ref{tab:molar} below.
+
+\begin{table}[ht]
+\caption{Molar Mass of Minerals (g/mol)}
+\label{tab:molar}
+\centering
+\begin{tabular}{|>{\raggedright\arraybackslash}m{5cm}|m{5cm}|}
+\hline
+\textbf{Mineral} & \textbf{Molar Mass (g/mol)} \\
+\hline
+Potassium Feldspar & 556 \\
+\hline
+Sodium Feldspar & 262 \\
+\hline
+Calcium Feldspar & 278 \\
+\hline
+\end{tabular}
+\end{table}
+
+Using structured light technology, archaeologists measure pit surface areas and combine them with mineral dissolution rates to estimate total dissolution volumes. Subtracting these from measured pit volumes yields abrasive wear volumes. With Equations (1) and (2), values of \(n_{\text{up}}\) and \(n_{\text{down}}\) are calculated.
+
+To quantify movement tendencies, a judgment indicator is defined:
+\begin{equation}
+    a = \frac{a_{up}-a_{down}}{a_{up}+a_{down}}
+\end{equation}
+
+\begin{itemize}
+    \item \( G < -0.1 \): Downward movement predominates.
+    \item \( G > 0.1 \): Upward movement predominates.
+    \item \( -0.1 < G < 0.1 \): No significant directional preference.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=14cm]{Q2_X.png} 
+    \caption{Workflow for Directional Usage Patterns Analysis}
+    \label{fig:aa}
+\end{figure}
+
+This framework integrates mineralogical, chemical, and physical analyses, providing insights into the behavioral and environmental factors shaping historical staircase usage. 
+
+\subsection{Modeling Parallel and Single-File Stair Usage}
+Determining whether stairs were used by single individuals or multiple people walking side-by-side is key to understanding historical traffic behavior and wear distribution. We propose analyzing wear patterns across the stair width through wear volume measurements, curve fitting, and anthropometric parameters.
+
+\subsubsection{Single-File Usage Assumption}
+
+When individuals walk single-file, it is reasonable to assume they will predominantly use the center of the stairs. This behavior is supported by three key principles:
+\begin{enumerate}
+    \item \textbf{Shortest Path Principle:} The central path represents the shortest straight-line distance, making it the most efficient walking route.
+    \item \textbf{Symmetry of Stair Design:} Most staircases are symmetrically designed, naturally guiding individuals toward the central region.
+    \item \textbf{Edge Constraints:} Stair edges are typically bounded by railings or walls, which create a sense of spatial restriction, discouraging use of the edges.
+\end{enumerate}
+
+Given these factors, it is assumed that single-file walkers concentrate their steps along the centerline of the stairs, resulting in wear patterns that are primarily confined to the middle regions\cite{6}.
+
+\subsubsection{Parallel Usage Analysis}
+
+When individuals walk side-by-side, wear patterns spread across multiple regions along the stair width. To analyze this, we divide each step into \(n\) equal segments and further split it into \(2n\) regions to differentiate between upward and downward movement, with the inner edge (closer to the wall) and outer edge (closer to the open side).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=13cm]{image/Q2.jpg} 
+    \caption{Wear volume distribution across inner and outer edges of a sample step.}
+    \label{fig:aa}
+\end{figure}
+
+Using structured light, we measure the wear volume in each region and present the data as a scatter plot. For example, stairs from the Emei Mountain region in southwest China are analyzed with \(n = 100\). The wear volume on the inner and outer edges of one single step is showed in the Figure \ref{fig:89}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{photo/Q3_bar.png} 
+    \caption{Bar chart of the wear volume of walking landing area.}
+    \label{fig:89}
+\end{figure}
+
+\subsubsection{Curve Fitting and Pattern Identification}
+To transform the scatter plot into a continuous function, we applied the least squares method for curve fitting. The fitting function is expressed as:
+\[
+y = \bm{w}^T \bm{x} + b,
+\]
+where \(\bm{w}\) is the weight vector, \(\bm{x}\) is the feature vector, and \(b\) is the bias term.
+
+The goal of the least squares method is to find the parameters \(\bm{w}\) and \(b\) that minimize the squared error between the predicted and observed values. Formally, this can be written as:
+\[
+(\bm{w}, b) = \arg \min_{\bm{w}, b} \sum_{k=1}^n \left( y_k^* - y_k \right)^2 
+= \arg \min_{\bm{w}} \sum_{k=1}^n \left( y_k^* - \bm{w}^T \bm{x}_k - b \right)^2,
+\]
+where \(y_k^*\) is the observed value, and \(y_k\) is the predicted value.
+
+Define \(\bm{\beta} = [\bm{w}; b]\), \(\bm{X}\) as the matrix of features, and \(\bm{y}\) as the vector of observed values. The model can be reformulated as:
+\[
+\bm{y} - \bm{X} \bm{\beta} =
+\begin{bmatrix}
+y_1^* - \bm{w}^T \bm{x}_1 - b \\
+y_2^* - \bm{w}^T \bm{x}_2 - b \\
+\vdots \\
+y_n^* - \bm{w}^T \bm{x}_n - b
+\end{bmatrix}.
+\]
+
+The optimization problem is:
+\[
+\bm{\beta} = \arg \min_{\bm{\beta}} \left( \bm{y} - \bm{X} \bm{\beta} \right)^T \left( \bm{y} - \bm{X} \bm{\beta} \right).
+\]
+
+Let \(L = \left( \bm{y} - \bm{X} \bm{\beta} \right)^T \left( \bm{y} - \bm{X} \bm{\beta} \right)\). Taking the gradient and setting it to zero. After simplifying one term, we obtain:
+\[
+\bm{\beta} = \left( \bm{X}^T \bm{X} \right)^{-1} \bm{X}^T \bm{y}.
+\]
+
+For a solution to exist, \(\bm{X}^T \bm{X}\) must be full rank, requiring \(n > m+1\) and linear independence of the columns of \(\bm{X}\). Through this process, terms with coefficients less than 0.01 were removed, and the final fitted function graphs were obtained, as shown Figure \ref{fig:scatter_wear}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{image/scatter.png}
+    \caption{The fitted function graphs.}
+    \label{fig:scatter_wear}
+\end{figure}
+
+\subsubsection{Determining Usage Patterns and Group Size}
+
+To reduce errors, a random sampling rate of 20\%–30\% was applied to the staircase. For the same region, outliers were eliminated, and the average wear volume was calculated as the final value. 
+Ideally, the number of local maxima in a continuous function graph corresponds to the number of people walking abreast.The idealized situation is represented in Figure \ref{fig:Ideal}. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{photo/Q3_ideal.png} 
+    \caption{The idealized situation graph.}
+    \label{fig:Ideal}
+\end{figure}
+
+In practice, maxima alone often fail to reflect actual usage. Each maximum would indicate consistent heavy traffic, separated by a local minimum. These minima typically appear as protrusions between depressions, which wear faster due to greater pressure. Over time, they level with adjacent areas, making the maxima count unreliable for estimating the number of individuals walking abreast.
+
+On-site investigations of long-standing staircases reveal that wear depth generally peaks at the center and decreases toward the edges. Based on this, we introduce the concept of effective length to estimate the number of people walking side by side.
+
+In the fitted function graph, local maxima are connected to adjacent maxima. The largest maximum is labeled as the Start point, with the nearest maxima on the left and right labeled as $Left_1$ and $Right_1$. If the maximum to the left of $Left_1$ is less than 1.2 times $Left_1$, it is labeled as $Left_2$, continuing until no further adjacent maxima exist or the next maximum exceeds the previous one. The process is mirrored on the right, resulting in $Right_m$.
+
+The midpoint between $Left_n$ and $Left_{n-1}$ defines the left boundary, while the midpoint between $Right_m$ and $Right_{m-1}$ defines the right boundary. The distance between these boundaries is the effective length. Assuming an average shoulder width of 37.5 cm and 10 cm spacing between individuals, the total width per person is 47.5 cm. Dividing the effective length by 47.5 cm and rounding down provides the estimated number of people walking abreast.
+
+As an example, the fitted function graph of the outer edge is analyzed below:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{photo/Q3_a.png} 
+    \caption{Maximum value analysis and effective distance example diagram}
+    \label{fig:123}
+\end{figure}
+
+From the Figure \ref{fig:123} above, we can observe that the effective distance is approximately 1100mm. Dividing it by 475 mm and rounding down, we conclude that the staircase is typically used by 2 people walking side by side.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=13cm]{image/Q2_flow.png} 
+    \caption{Workflow for Parallel and Single-File Stair Usage Analysis.}
+    \label{fig:aa}
+\end{figure}
+
+This methodology provides a robust framework for distinguishing single-file and parallel usage patterns of stairs. By integrating wear volume analysis, curve fitting, and anthropometric parameters, it ensures accurate inferences about historical traffic behavior. Additionally, the findings offer valuable insights into the social and functional dynamics of the stairway's historical usage.
+
+\subsection{Renovation Detection and Structural Changes}
+This section examines whether a staircase has undergone repair or renovation based on its wear patterns. Staircase updates typically occur through either partial repairs or complete renovations. Given that complete renovations of all stairs in a building are uncommon, this study primarily focuses on partial repairs.
+
+A key characteristic of partial repairs is the noticeable difference in wear depth between repaired and unrepaired sections of the stairs. For example, structured light was used to capture the depth heatmap of a horizontal surface on a step from Mount Emei, showing both the repaired and unrepaired sections, as depicted in Figure~\ref{fig:hot}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=11cm]{image/hot2.png} 
+    \caption{Heatmap of the distribution.}
+    \label{fig:hot}
+\end{figure}
+
+The figure demonstrates that the unrepaired section exhibits significantly greater wear depth than the repaired section, reflecting the disparity typical of partial repairs.
+
+To establish a criterion for identifying whether a staircase has been repaired, 400 steps from repaired staircases and 400 steps from unrepaired staircases were randomly sampled. These 800 samples were divided into training and test sets in a 4:1 ratio. Since the samples naturally fall into two categories—repaired and unrepaired—classification was performed using the K-means++ clustering algorithm, leveraging the known number of groups to distinguish between them.
+
+\subsubsection{Clustering Algorithm for Renovation Detection}
+
+The K-means++ algorithm is a variation of the standard K-means algorithm, designed to improve the selection of initial cluster centers, thus enhancing the performance of clustering. The steps of the K-means++ algorithm are as follows:
+
+\begin{itemize}
+    \item \textbf{Step 1:} Select two initial cluster centers, which are the two points that are farthest apart along the one-dimensional axis of the samples.
+    \item \textbf{Step 2:} Calculate the distance of all remaining sample points to the two initial cluster centers and assign each point to the nearest cluster center.
+    \item \textbf{Step 3:} Recalculate the cluster centers based on the updated clusters.
+    \item \textbf{Step 4:} Repeat steps 2 and 3 until convergence or the maximum number of iterations is reached.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=4cm]{image/0.jpg}
+    \includegraphics[width=4cm]{image/1.jpg}
+    \includegraphics[width=4cm]{image/2.jpg}
+    \includegraphics[width=4cm]{image/3.jpg}
+    \caption{Illustration of the K-means++ Clustering Process}
+    \label{fig:ideal_usage}
+\end{figure}
+
+
+After applying the algorithm, we established a criterion for determining whether a staircase has been repaired. This criterion allows us to classify the samples into repaired and unrepaired categories effectively.
+
+\subsubsection{Model Validation}
+Using the K-means++ algorithm, we performed clustering on the training set samples. The center of the line connecting the two closest samples from different categories was used as the criterion to determine whether repair should be performed, yielding a result of 9.435mm.
+
+To validate the repair detection model, we applied the derived criterion to the test set, which consisted of 160 samples. The results showed a high accuracy rate of 91.875\%, confirming the effectiveness of the proposed method for identifying whether stairs have undergone repairs.
+
+This model provides a reliable approach for determining the repair status of stairs based on their wear patterns, enabling historical and preservation studies to be carried out with greater accuracy and efficiency.
+
+\subsection{Material Consistency Assessment Based on Wear Patterns}
+
+This section investigates whether the wear patterns of a staircase align with the theoretical wear characteristics of a given material. By simulating the theoretical wear volume and comparing it to the observed wear volume, we determine if the material assumptions are consistent with the actual staircase. Given the requirement to preserve the integrity of historical structures, a non-destructive analysis is emphasized.
+
+Due to the excessive normal load in practical scenarios, it is challenging to conduct experiments using the UMT-TriboLab. Therefore, to obtain a more accurate \( K / H \) value, we opted to simulate the wear behavior of granite using the Umeshmotion user subroutine in \textit{ABAQUS} for finite element analysis.
+
+In the Umeshmotion program, we obtained the coordinates, pressure, and sliding distance of each node on the test object during the wear process. Using the differential form of the Archard model, the wear depth at each node was calculated\cite{7}. 
+
+
+In finite element simulations, the wear of two objects manifests as the movement of the contact surface mesh, which can lead to mesh distortion during the simulation. To address this issue, we employed the Arbitrary Lagrangian-Eulerian (ALE) mesh adaptation method.
+
+In the initial stages of wear, the contact surface was uniform in height, but the pressure distribution was uneven, with higher pressure at the center and lower pressure at the edges. As wear progressed, a shallow central depression formed, increasing contact pressure and elastic deformation.The Figure \ref{fig:simulation_results} below shows the simulation results of wear on the granite surface:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=11cm]{photo/new1.png} 
+    \caption{Heatmap of wear on the granite surface.}
+    \label{fig:simulation_results}
+\end{figure}
+
+
+Pressure distribution and wear depth at various positions were analyzed, as illustrated in Figures~\ref{fig:exp1} and \ref{fig:exp2}. 
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=8cm]{xx.png} 
+%     \caption{The pressure distribution graph of different time.}
+%     \label{fig:exp1}
+% \end{figure}
+
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=8cm]{xxx.png} 
+%     \caption{The graph of wear depth.}
+%     \label{fig:exp2}
+% \end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{xx.png} % 替换为图片路径
+    \caption{The pressure distribution graph of different time.}
+    \label{fig:exp1}
+\end{minipage}
+\kern 4mm
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{xxx.png} % 替换为图片路径
+    \caption{The graph of wear depth.}
+    \label{fig:exp2}
+\end{minipage}
+\end{figure}
+
+The simulated results closely matched experimental data, with the calculated wear coefficient \( K \) at \( 6.217 \times 10^{-12} \), differing by 5.05\% from the UMT-TriboLab results.
+
+Using the precise \( K / H \) value, Equation~\ref{eq:2} estimates the theoretical wear volume of granite. Assuming 2,000 daily users over 500 years, the extended Archard model calculates a theoretical wear volume of \( 2.602 \times 10^{-3} \, \text{m}^3 \).
+
+In practice, factors like corrosive and fatigue wear also contribute to material degradation. Accounting for these effects, a 10\% error margin is applied. Thus, if the actual wear volume falls between \( 2.342 \times 10^{-3} \, \text{m}^3 \) and \( 2.862 \times 10^{-3} \, \text{m}^3 \), the observed wear aligns with the material properties assumed by archaeologists.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=14cm]{sss.png} 
+    \caption{Workflow for Material Consistency Assessment }
+    \label{fig:aa}
+\end{figure}
+
+\subsection{Traffic Wear and Surface Analysis}
+This section explores the relationship between traffic volume and wear patterns, proposing a methodology to classify stair usage based on surface smoothness.
+
+\subsubsection{Wear Characteristics and Surface Smoothness}
+Stair wear varies between high traffic over short periods and low traffic over long periods. High traffic causes localized wear, leading to scratches and rough surfaces due to higher loads and micro-cracks. In contrast, low traffic results in uniform wear, creating smoother surfaces. To quantify smoothness, we use gradient metrics where higher gradients indicate rougher surfaces.Surface smoothness is inversely related to the gradient magnitude: a rougher surface has greater height variations and higher gradient values. The surface gradient is defined as:
+
+\begin{equation}
+    \nabla h = \left( \frac{\partial h}{\partial x}, \frac{\partial h}{\partial y} \right),
+\end{equation}
+
+where \( \frac{\partial h}{\partial x} \) and \( \frac{\partial h}{\partial y} \) are the first-order partial derivatives of height \( h \) along the \( x \)- and \( y \)-axes. The gradient magnitude, expressed as its \( L_2 \)-norm, measures surface roughness:
+
+\begin{equation}
+    \|\nabla h\|_2 = \sqrt{\left( \frac{\partial h}{\partial x} \right)^2 + \left( \frac{\partial h}{\partial y} \right)^2}.
+\end{equation}
+
+To compute the gradient at each point, we apply the Sobel operator, a common edge-detection method. This operator uses a \( 3 \times 3 \) convolution kernel with Gaussian smoothing and differentiation, approximating gradients in both horizontal and vertical directions. Figures~\ref{fig:x} and~\ref{fig:y} illustrate this process.
+
+\begin{figure}[ht]
+\centering
+\begin{minipage}{0.2\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{image/Gx.png} % 替换为图片路径
+    \caption{Gx}
+    \label{fig:x}
+\end{minipage}
+\kern 4mm
+\begin{minipage}{0.2\textwidth}
+    \includegraphics[width=\textwidth]{image/Gy.png} % 替换为图片路径
+    \caption{Gy}
+    \label{fig:y}
+\end{minipage}
+\end{figure}
+
+\begin{equation}
+    G = \sqrt{Gx^2+Gy^2}
+\end{equation}
+
+To minimize computational complexity and exclude color effects, the original image is converted to grayscale using the ITU-R BT.601 standard:
+
+\begin{equation}
+    Gray = 0.299R + 0.587G + 0.114B,
+\end{equation}
+
+where \( R, G, B \) are the red, green, and blue components of the original image. After grayscale conversion and Sobel processing, the average gradient of the staircase surface is calculated as:
+
+\begin{equation}
+    \bar{\nabla h} = \frac{1}{N} \sum_{i=1}^N \|\nabla h_i\|_2,
+\end{equation}
+
+where \( N \) represents the total number of pixels, and \( \|\nabla h_i\|_2 \) is the gradient magnitude at pixel \( i \).
+
+\subsubsection{Experimental Validation of the Smoothness Metric}
+
+To validate the proposed smoothness metric, we analyzed staircases from two parks: an urban park built in 2016 and a suburban park built in 2017. Both staircases are made of granite. Figures~\ref{fig:rough_surface} and \ref{fig:smooth_surface} show processed images of one step from each park, where the average gradient values were calculated as \( 5.0116 \) for the urban park and \( 1.4822 \) for the suburban park.
+
+\begin{figure}[ht]
+\centering
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{image/Rough.png} % 替换为图片路径
+    \caption{Illustration - Rough (Average Gradient Magnitude: 5.0116)}
+    \label{fig:rough_surface}
+\end{minipage}
+\kern 3mm
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{image/Smooth.png} % 替换为图片路径
+    \caption{Illustration - Smooth (Average Gradient Magnitude: 1.4822)}
+    \label{fig:smooth_surface}
+\end{minipage}
+\end{figure}
+
+The significantly higher average gradient of the urban park staircase suggests concentrated wear, consistent with high traffic over short periods. Conversely, the smoother surface of the suburban park staircase reflects uniform wear from low traffic over long periods.
+
+\subsubsection{Generalized Methodology for Unknown Traffic Data}
+
+In the absence of direct traffic data, we propose a generalized experimental setup to evaluate surface smoothness:
+
+1. Prepare \( n \) granite samples identical to the staircase material.
+
+2. Apply a normal load of \( 1200 \, \text{N} \) every 10 minutes with a sliding distance of \( 1 \, \text{mm} \) for three months.
+
+3. Capture wear patterns using structured light imaging, preprocess with the Sobel operator, and compute the average gradient for all samples.
+
+4. Remove outliers and calculate the mean gradient as the baseline.
+
+Considering environmental variability, a \( 20\% \) error margin is applied. For example, if the average gradient of a suburban park staircase is \( 1.4822 \), its smoothness range is \( (0, 1.7786] \). Staircases exceeding this threshold, like the urban park staircase \( 5.0116 \), are classified as high traffic over short periods.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=10cm]{Q6_2.png} 
+    \caption{Workflow for Traffic Volume Distribution and Staircase Surface Analysis}
+    \label{fig:Q6}
+\end{figure}
+
+This smoothness metric distinguishes traffic patterns based on wear characteristics. High gradients indicate rough surfaces from high traffic, while low gradients reflect smoother surfaces from low, distributed traffic. However, environmental factors and unforeseen events require error margins for robust assessments.
+
+\section{Sensitivity analysis and error analysis}
+In the first problem, the material hardness of the staircase, the normal load applied by pedestrians, and the sliding distance of the foot during walking can be easily derived from statistical data. However, the wear coefficient \( K \) in the Archard equation typically varies with changes in friction conditions and normal load. Therefore, it is necessary to assess the sensitivity of the wear coefficient \( K \) to these variations in friction conditions and normal load.
+
+We conducted additional experiments using the UMT-TriboLab, testing both dry and wet friction conditions, and measuring the wear coefficient at intervals from 1N to 10N with a 0.1N step. The resulting variation curves of \( K \) under each condition are shown Figure \ref{fig:resulting v c}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=10cm]{photo/An.png} 
+    \caption{The resulting variation curves of different conditions.}
+    \label{fig:resulting v c}
+\end{figure}
+
+From the measurements of \( K \) under both conditions, we find that under dry friction, the standard deviation of \( K \) is \( 7.87 \times 10^{-4} \) with a mean of \( 5.921 \times 10^{-21} \), while under wet friction, the standard deviation is \( 8.85 \times 10^{-4} \) with a mean of \( 5.919 \times 10^{-12} \). Clearly, the standard deviations are small, and the mean values are very close to each other. This indicates that fluctuations in normal load within a small range and changes in friction conditions have minimal impact on the wear coefficient \( K \), demonstrating a certain level of robustness.
+
+\section{Model evaluation and further discussion}
+\subsection{Strengths and Weaknesses}
+\subsubsection{Strengths}
+\begin{itemize}
+    \item The Archard equation, a well-established model for abrasive wear, serves as the foundation of our wear model, integrating material hardness, wear coefficients, and friction conditions for a robust theoretical framework.
+    \item Laboratory experiments with UMT-TriboLab measured wear coefficients under varying conditions, improving model accuracy. The Arrhenius reaction rate formula was applied to estimate staircase age based on weathered layer thickness.
+    \item Gait analysis explored the effects of upward and downward movement on stair surfaces, while local precipitation's role in corrosive wear was considered to minimize errors.
+    \item Real-world normal loads were incorporated into finite element simulations in ABAQUS with the Umeshmotion user subroutine, aligning theoretical results with practical conditions.
+    \item Computer vision techniques, including decolorization and Sobel filtering, were used to calculate the average surface gradient, enhancing model applicability.
+\end{itemize}
+
+\subsubsection{Weaknesses}
+\begin{itemize}
+    \item The model's data primarily comes from modern staircases with similar materials, which may differ from historical structures, potentially leading to discrepancies in predictions.
+    \item The model focuses on abrasive wear, excluding adhesive wear, fatigue wear, and other types, which could limit its applicability in certain scenarios.
+\end{itemize}
+
+\subsection{Further Discussion}
+\subsubsection{Model Improvements}
+The model simplifies data by focusing on abrasive wear as the main mechanism. Future improvements could integrate advanced testing devices, a broader database, and additional wear mechanisms such as fatigue and adhesive wear. Research could also explore crack features and internal structures under high-cycle wear, while incorporating environmental factors like temperature, humidity, and terrain for greater applicability.
+
+\subsubsection{Model Extensions}
+Considering the complexity of wear mechanisms, machine learning and deep learning techniques could improve classification accuracy by training on large wear pattern datasets. Incorporating environmental and historical factors, an adaptive and versatile building wear model could be developed, supporting lifespan predictions, urban planning, and historical preservation.
+
+\section{Conclusions}
+This study presents a pattern recognition framework for analyzing staircase wear patterns, enabling the inference of usage cycles, purposes, and structural changes. By integrating the Archard equation, finite element simulations, gait analysis, and weathering studies, we developed an accurate method to estimate usage frequency, pedestrian flow, and usage patterns of staircases.
+
+Using finite element simulation, material mechanics experiments, and computer vision data, we combined physical models with clustering algorithms to analyze wear patterns. This method supports repair history investigation, material tracing, and model refinement. Our approach has strong potential for applications in historical preservation, facility safety, and urban planning, while offering valuable insights into long-term material wear and architectural lifespan.
+
+\begin{thebibliography}{99}
+\bibitem{1} Zhao, J. (2020). Research status and development trends of wear calculation models. \textit{Henan Science and Technology}, \textbf{39}(35), 65--67. ISSN: 1003-5168.
+
+\bibitem{2} Wang, C. (2022). Study on the tribochemical removal behavior of granite under the action of bionic complexing agents (Doctoral dissertation). Southwest Jiaotong University.
+
+\bibitem{3} Zhou, Y., Zhao, Y., \& Zhang, Y. (1995). Arrhenius formula and activation energy. \textit{Journal of Shihezi Agricultural College}, (04), 76--80.
+
+\bibitem{4} Arismendi Florez, J. J., Ferrari, J. V., Ulsen, C., \& Ferrari, J. V. (2024). Effects of contact angle and roughness on mercury intrusion porosimetry in carbonate rocks. \textit{Journal of Materials Research and Technology}, \textbf{32}, 286--317.
+
+\bibitem{5} Shen, L., Lv, Q., Liu, W., et al. (2020). Numerical calculation study on three-dimensional rock fracture permeability characteristics under stress seepage dissolution coupling. \textit{Journal of Geotechnical Engineering}, 1--10. [2020-01-27].
+
+\bibitem{6} Sun, J., Li, K. (2008). A review of pedestrian motion modeling and simulation research. \textit{Computer Simulation}, \textbf{25}(12), 12--16.
+
+\bibitem{7} Li, S., Li, S., Zhang, Y., et al. (2020). Measurement method and experiment of material wear coefficient. \textit{Journal of Shenyang Jianzhu University (Natural Science Edition)}, \textbf{36}(05).
+
+\end{thebibliography}
+
+% \memoto{MCM}
+% \memofrom{BLAIR}
+% \memosubject{Essay submitting}
+% \memodate{\today}
+% %\memologo{\includegraphics[width=4cm]{Dayu.png}}
+% \begin{memo}[Memorandum]
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=14cm]{image/memorandum.png}
+%     \caption{Memorandum}
+%     \label{fig:memo}
+% \end{figure}
+
+% \end{memo}
+
+\AImatter
+\begin{ReportAiUse}{9}
+
+\bibitem{AI1}
+ChatGPT (GPT-4-turbo)\\
+Query1: Explain Archard equation for me briefly.\\
+Output: The Archard equation is commonly used to model the wear rate in tribology, specifically for sliding contact between two materials. It relates the wear volume (or wear rate) to the applied load, the sliding distance, and the hardness of the material. The equation is expressed as:
+
+\[
+V = k \cdot \frac{F \cdot d}{H}
+\]
+
+Where:
+- \( V \) is the wear volume (the amount of material worn away).
+- \( k \) is the wear coefficient (a material-dependent constant).
+- \( F \) is the normal load applied on the surface.
+- \( d \) is the sliding distance.
+- \( H \) is the hardness of the material (typically in units like N/m² or Pa).
+
+**Key points of the Archard equation:**
+- It assumes that wear is proportional to the load applied and the sliding distance.
+- The wear rate is inversely proportional to the hardness of the material, meaning harder materials tend to wear less.
+- The wear coefficient \( k \) is often determined experimentally for specific material pairs.
+
+In summary, the Archard equation provides a way to estimate wear based on the mechanical interaction between two surfaces under sliding conditions.know if you need further help with LaTeX!
+
+\bibitem{AI2}
+Gemini 2.0 Flash Experimental \\
+Query: Brainstorm some innovative form of chart or graph that can be added to my MCM contest essay.\\
+Output: Okay, let's brainstorm some innovative chart and graph ideas that could elevate your MCM (Mathematical Contest in Modeling) essay. The key here is to go beyond the standard bar charts and line graphs and think about visualizations that are both informative and visually engaging. Remember, the goal is to clarify your model and its results, not just add something fancy for the sake of it.
+
+**General Principles for Innovation:**
+
+*   **Context is King:** The best innovative visualizations are those that are tailored to your specific model, data, and problem. Don't force a visualization if it doesn't make sense.
+*   **Focus on Insights:** The visualization should highlight key insights and trends in your results. What's the "story" your data is telling?
+*   **Clarity and Readability:** While being innovative, your visualizations must be clear and easy to understand. Use clear labels, legends, and titles.
+*   **Use Color Purposefully:** Use color to highlight specific aspects of your data, but avoid using too many colors or colors that are hard to distinguish.
+*   **Interactive Elements:** If you can, use interactive elements like tooltips or zoom, especially if you're submitting a digital version of your paper.
+
+**Brainstorming Ideas:**
+
+1.  **Network Graph/Diagram:**
+    *   **Use Case:** Ideal for showing relationships or connections between different entities in your model.
+    *   **Example:** If you're modeling social networks, supply chains, or traffic flows, a network diagram can show how different nodes or points are connected, and you can use different visual cues for strength of connection, flow rate, etc.
+    *   **Innovation:** Use node size to represent the importance of a node, or use animation to show how connections change over time.
+    *   **Tools:** Gephi, NetworkX (Python)
+
+2.  **Sankey Diagram:**
+    *   **Use Case:** Great for visualizing flows, showing how different items transition from one category to another.
+    *   **Example:** If you're modeling energy consumption, a Sankey diagram can show how energy flows from different sources to different users, with the width of the flow representing the amount of energy flow.
+    *   **Innovation:** Use color coding to highlight inefficiencies or bottlenecks in the system.
+    *   **Tools:** D3.js, Plotly, Google Charts.
+
+3.  **Geographic Heatmaps:**
+    *   **Use Case:** Perfect for modeling problems with a geographic component.
+    *   **Example:** If you're analyzing disease spread, a heat map can show where cases are concentrated over a geographic region.
+    *   **Innovation:** Use animation to show how the heat map changes over time.
+    *   **Tools:** Folium (Python), ArcGIS, QGIS
+
+4.  **Contour Plots (Level Curves):**
+    *   **Use Case:** Useful for visualizing three-dimensional data projected onto a two-dimensional plane.
+    *   **Example:** If you're analyzing the performance of your model with respect to two parameters, a contour plot can show how the model's output changes as you vary those parameters.
+    *   **Innovation:** Combine the contour plot with surface plots to visualize the actual 3D surface (optional)
+    *   **Tools:** Matplotlib (Python), Plotly
+
+5.  **Radar Charts (Spider Charts):**
+    *   **Use Case:** Good for comparing different items along multiple dimensions.
+    *   **Example:** If you're comparing the performance of different scenarios or alternatives, a radar chart can visualize how each option performs across several key metrics.
+    *   **Innovation:** You can use radar charts to visually compare multiple scenarios and show which has the optimal performance given multiple criteria.
+    *   **Tools:** Matplotlib (Python), Plotly.
+
+6.  **Circular Bar Charts (Radial Charts):**
+    *   **Use Case:** An alternative to traditional bar charts that can be visually appealing. Useful when the data has a cyclical or periodic nature.
+    *   **Example:** Visualizing seasonal data or time series data across a day, week or a year.
+    *   **Innovation:** Use color gradients to highlight key periods or extremes.
+    *   **Tools:** D3.js, Plotly.
+
+7.  **Timeline or Gantt Chart:**
+    *   **Use Case:** To visualize time-based processes or events
+    *   **Example:** To display the schedule of different events or steps in your model.
+    *   **Innovation:** Use icons, colors, and animation to make the timeline more understandable
+    *   **Tools:** PlantUML, Mermaid, and Javascript libraries
+
+8.  **Violin Plots:**
+    *   **Use Case:** An alternative to box plots that show the entire distribution of the data.
+    *   **Example:** If you're comparing distributions of different data sets, a violin plot can show the shape of the distribution, not just the mean or the quantiles.
+    *   **Innovation:** Combine violin plots with scatter plots to see data distributions along with individual data points.
+    *   **Tools:** Seaborn (Python), Plotly
+
+9.  **Animated Scatterplots:**
+    *   **Use Case:** If you have data changes over time
+    *   **Example:** To visualize how data changes over a timeline, where time could be visualized as an axis in scatter plots.
+    *   **Innovation:** Make the size of points a third variable.
+    *   **Tools:** Matplotlib, Plotly
+
+10. **Interactive Dashboard:**
+    *   **Use Case:** To summarize complex models that have many parameters
+    *   **Example:** Create an interactive app that allows users to modify parameter and visualize results of your models in real time.
+    *  **Innovation:** Make it web based.
+    *   **Tools:** Shiny (R), Dash (Python), Streamlit (Python)
+
+**How to Choose:**
+
+1.  **Understand Your Model:** The best graph type comes from the insights your model produces.
+2.  **Audience:** Consider your audience, will the visualization be understandable for the judges?
+3.  **Tools Availability:** Which tools are you comfortable with? Don't try to learn a new tool the day before the deadline.
+4.  **Time:** Some visualizations are more complex to create than others, so consider your time constraints.
+
+Remember, the most important thing is to use visualizations to clarify your ideas and data. Innovation for innovation's sake is not what the judges are looking for. Start thinking about how your results can be best visually represented early in the modeling process, and then choose the best visualization method. Good luck!
+
+\bibitem{AI3}
+KLING AI 1.6 model \\
+Query: Create an image of a set of stone stairs that show extreme wear and tear from long-term use. The middle of each step is significantly concave, with a very noticeable dip, and the edges are higher than the center. The concave shape should feature large curves and irregular contours. The surface of the steps is heavily worn, uneven, and full of dents and pits. There are no sharp edges left, and the material appears rough, eroded, and rugged, with the middle almost worn through. The overall texture of the stairs should look weathered and aged, emphasizing the uneven and heavily used condition. It should have one normal church window. \\
+Output: Figure \ref{fig:ai}
+
+\end{ReportAiUse}
+\end{document}
