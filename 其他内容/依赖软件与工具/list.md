@@ -1,6 +1,8 @@
 # 依赖软件与工具列表
 > 本列表为个人常用软件、工具、网站记录，用于后续电脑异常备份用。大家有需要也可自取。
+
 ## 软件
+
 ### 科研\学习\工作
 - VSCode
 - Anaconda
@@ -14,16 +16,15 @@
 - JSONView64：Json阅读器
 - PowerPoint\Word\Excel\OneNote\iSlide\字由\AxMath\Kutools for Excel
 
-
 - 非 常用:
   - Cursor
   - AutoHotkey
   - VMWare Workstation Pro
   - Gephi：复杂网络可视化分析工具
   - CiteSpace：科学文献可视化分析工具
-  
 
 ### 实用
+- 微信\QQ
 - PotPlayer: 视频播放器
 - calibre：E-book阅读器
 - 腾讯会议
@@ -37,7 +38,6 @@
 - WindowsCleaner：磁盘清理工具
 - Edge\Chrome
 
-
 - 非 常用
   - Google Drive
   - Youlean Loudness Meter 2：媒体响度测量
@@ -48,16 +48,11 @@
 - QQ音乐
 - bilibili
 - bilidown: bilibili视频下载器
+- steam
 
 - 非 常用
   - UU加速器
-  - steam
-
-### 生活日常
-- 微信\QQ
-
-- 非 常用:
-
+  
 ## 工具
 - InputTip: 输入中英文不同标识
 - DeskPins: pin窗口, 保持最上层
