@@ -1,0 +1,105 @@
+
+<style>
+  .wrap { padding: 1rem 0; font-size: 13px; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-tertiary); padding: 10px 10px 4px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  col.c1 { width: 11%; } col.c2 { width: 28%; } col.c3 { width: 19%; } col.c4 { width: 42%; }
+  thead th { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 7px 10px; border-bottom: 0.5px solid var(--color-border-secondary); text-align: left; position: sticky; top: 0; z-index: 1; }
+  td { padding: 6px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: top; color: var(--color-text-primary); line-height: 1.5; word-break: break-word; }
+  tr:last-child td { border-bottom: none; }
+  .abbr { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+  .en { font-size: 12px; color: var(--color-text-secondary); }
+  .zh { font-size: 12px; }
+  .desc { font-size: 12px; color: var(--color-text-secondary); }
+  .layer-header td { background: var(--color-background-secondary); font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-text-tertiary); padding: 5px 10px; border-bottom: 0.5px solid var(--color-border-secondary); }
+</style>
+<div class="wrap">
+<table>
+  <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup>
+  <thead><tr><th>缩写</th><th>英文全称</th><th>中文全称</th><th>作用</th></tr></thead>
+  <tbody>
+    <tr class="layer-header"><td colspan="4">概论</td></tr>
+    <tr><td class="abbr">ISP</td><td class="en">Internet Service Provider</td><td class="zh">互联网服务提供者</td><td class="desc">向用户提供 IP 地址使用权及互联网接入服务</td></tr>
+    <tr><td class="abbr">RFC</td><td class="en">Request For Comments</td><td class="zh">请求评注</td><td class="desc">各类协议等技术规范的文档集合</td></tr>
+    <tr><td class="abbr">ISOC</td><td class="en">Internet Society</td><td class="zh">互联网协会</td><td class="desc">负责因特网全面管理及全球推广</td></tr>
+    <tr><td class="abbr">RTT</td><td class="en">Round-Trip Time</td><td class="zh">往返时间</td><td class="desc">从发送数据到收到确认所经历的总时间</td></tr>
+    <tr><td class="abbr">PDU</td><td class="en">Protocol Data Unit</td><td class="zh">协议数据单元</td><td class="desc">对等层次之间传送的数据包</td></tr>
+    <tr><td class="abbr">SDU</td><td class="en">Service Data Unit</td><td class="zh">服务数据单元</td><td class="desc">同一系统内层与层之间交换的数据包</td></tr>
+    <tr><td class="abbr">C/S</td><td class="en">Client/Server</td><td class="zh">客户/服务器方式</td><td class="desc">区分服务请求方与提供方的通信模式</td></tr>
+    <tr><td class="abbr">P2P</td><td class="en">Peer-to-Peer</td><td class="zh">对等方式</td><td class="desc">两端平等通信，不区分客户与服务器</td></tr>
+    <tr><td class="abbr">WAN</td><td class="en">Wide Area Network</td><td class="zh">广域网</td><td class="desc">覆盖范围几十至几千公里的网络</td></tr>
+    <tr><td class="abbr">MAN</td><td class="en">Metropolitan Area Network</td><td class="zh">城域网</td><td class="desc">覆盖范围约 5～50 公里的网络</td></tr>
+    <tr><td class="abbr">LAN</td><td class="en">Local Area Network</td><td class="zh">局域网</td><td class="desc">覆盖较小范围（约 1 公里）的网络</td></tr>
+    <tr><td class="abbr">PAN</td><td class="en">Personal Area Network</td><td class="zh">个人区域网</td><td class="desc">覆盖约 10 米的个人短距无线网络</td></tr>
+
+    <tr class="layer-header"><td colspan="4">物理层</td></tr>
+    <tr><td class="abbr">QAM</td><td class="en">Quadrature Amplitude Modulation</td><td class="zh">正交振幅调制</td><td class="desc">同时调制信号的幅度和相位以提高传输效率</td></tr>
+
+    <tr class="layer-header"><td colspan="4">数据链路层</td></tr>
+    <tr><td class="abbr">HDLC</td><td class="en">High-level Data Link Control</td><td class="zh">高级数据链路控制协议</td><td class="desc">数据链路层协议，用零比特填充实现透明传输</td></tr>
+    <tr><td class="abbr">MTU</td><td class="en">Maximum Transfer Unit</td><td class="zh">最大传送单元</td><td class="desc">规定帧数据部分长度上限</td></tr>
+    <tr><td class="abbr">BER</td><td class="en">Bit Error Rate</td><td class="zh">误码率</td><td class="desc">衡量传输过程中错误比特所占的比率</td></tr>
+    <tr><td class="abbr">CRC</td><td class="en">Cyclic Redundancy Check</td><td class="zh">循环冗余校验</td><td class="desc">检测数据在传输过程中是否产生比特差错</td></tr>
+    <tr><td class="abbr">SW</td><td class="en">Stop and Wait</td><td class="zh">停止等待协议</td><td class="desc">发一帧等一确认，最简单的可靠传输协议</td></tr>
+    <tr><td class="abbr">ARQ</td><td class="en">Automatic Repeat reQuest</td><td class="zh">自动重传请求</td><td class="desc">接收方自动触发对丢失或出错帧的重传</td></tr>
+    <tr><td class="abbr">GBN</td><td class="en">Go-Back-N</td><td class="zh">回退 N 帧协议</td><td class="desc">出错后退回到出错帧重传后续所有帧</td></tr>
+    <tr><td class="abbr">SR</td><td class="en">Selective Repeat</td><td class="zh">选择重传协议</td><td class="desc">只重传出错帧，效率高于 GBN</td></tr>
+    <tr><td class="abbr">PPP</td><td class="en">Point-to-Point Protocol</td><td class="zh">点对点协议</td><td class="desc">最广泛使用的点对点数据链路层协议</td></tr>
+    <tr><td class="abbr">FCS</td><td class="en">Frame Check Sequence</td><td class="zh">帧检验序列</td><td class="desc">PPP 帧中由 CRC 计算得出的校验字段</td></tr>
+    <tr><td class="abbr">MAC</td><td class="en">Medium Access Control</td><td class="zh">媒体接入控制</td><td class="desc">定义数据包在共享介质上如何进行传输</td></tr>
+    <tr><td class="abbr">DLSS</td><td class="en">Direct Sequence Spread Spectrum</td><td class="zh">直接序列扩频</td><td class="desc">码分复用中通过扩频码降低干扰、提升安全性</td></tr>
+    <tr><td class="abbr">CSMA/CD</td><td class="en">Carrier Sense Multiple Access / Collision Detection</td><td class="zh">载波监听多址接入/碰撞检测</td><td class="desc">有线以太网的信道争用方式，检测到碰撞后退避重传</td></tr>
+    <tr><td class="abbr">CSMA/CA</td><td class="en">Carrier Sense Multiple Access / Collision Avoidance</td><td class="zh">载波监听多址接入/碰撞避免</td><td class="desc">无线网络的信道争用方式，通过随机退避预防碰撞</td></tr>
+    <tr><td class="abbr">DCF</td><td class="en">Distributed Coordination Function</td><td class="zh">分布式协调功能</td><td class="desc">802.11 无线网络中基于竞争的去中心化接入方式</td></tr>
+    <tr><td class="abbr">PCF</td><td class="en">Point Coordination Function</td><td class="zh">点协调功能</td><td class="desc">802.11 无线网络中由 AP 集中控制的接入方式</td></tr>
+    <tr><td class="abbr">IFS</td><td class="en">InterFrame Space</td><td class="zh">帧间间隔</td><td class="desc">站点发帧前须持续检测到信道空闲的最短等待时间</td></tr>
+    <tr><td class="abbr">FDM</td><td class="en">Frequency Division Multiplexing</td><td class="zh">频分复用</td><td class="desc">所有用户同时占用不同频带并行通信</td></tr>
+    <tr><td class="abbr">TDM</td><td class="en">Time Division Multiplexing</td><td class="zh">时分复用</td><td class="desc">所有用户在不同时间占用同一频带轮流通信</td></tr>
+    <tr><td class="abbr">WDM</td><td class="en">Wavelength Division Multiplexing</td><td class="zh">波分复用</td><td class="desc">用一根光纤同时传输多个不同波长的光载波信号</td></tr>
+    <tr><td class="abbr">CDM</td><td class="en">Code Division Multiplexing</td><td class="zh">码分复用</td><td class="desc">各用户使用不同扩频码同时通信，互不干扰</td></tr>
+    <tr><td class="abbr">ARP</td><td class="en">Address Resolution Protocol</td><td class="zh">地址解析协议</td><td class="desc">已知 IP 地址，查询对应设备的 MAC 地址</td></tr>
+    <tr><td class="abbr">STP</td><td class="en">Spanning Tree Protocol</td><td class="zh">生成树协议</td><td class="desc">在增加冗余链路的同时防止以太网产生环路</td></tr>
+    <tr><td class="abbr">VLAN</td><td class="en">Virtual Local Area Network</td><td class="zh">虚拟局域网</td><td class="desc">将局域网设备按逻辑而非物理位置划分成不同组</td></tr>
+
+    <tr class="layer-header"><td colspan="4">网络层</td></tr>
+    <tr><td class="abbr">VC</td><td class="en">Virtual Circuit</td><td class="zh">虚电路</td><td class="desc">面向连接的数据传输，传输前建立虚拟路径</td></tr>
+    <tr><td class="abbr">CIDR</td><td class="en">Classless Inter-Domain Routing</td><td class="zh">无分类域间路由选择</td><td class="desc">用斜线记法标明网络前缀长度，消除地址分类限制</td></tr>
+    <tr><td class="abbr">FLSM</td><td class="en">Fixed Length Subnet Mask</td><td class="zh">定长子网掩码</td><td class="desc">所有子网使用相同长度掩码的 IPv4 地址规划方式</td></tr>
+    <tr><td class="abbr">VLSM</td><td class="en">Variable Length Subnet Mask</td><td class="zh">变长子网掩码</td><td class="desc">按需分配不同长度掩码，更高效利用 IP 地址空间</td></tr>
+    <tr><td class="abbr">AS</td><td class="en">Autonomous System</td><td class="zh">自治系统</td><td class="desc">由单一机构管理、使用统一路由策略的网络集合</td></tr>
+    <tr><td class="abbr">RIP</td><td class="en">Routing Information Protocol</td><td class="zh">路由信息协议</td><td class="desc">基于距离向量的内部网关协议，最大跳数为 15</td></tr>
+    <tr><td class="abbr">LSA</td><td class="en">Link State Advertisement</td><td class="zh">链路状态通告</td><td class="desc">链路状态协议中泛洪给所有路由器的拓扑信息包</td></tr>
+    <tr><td class="abbr">IR</td><td class="en">Internal Router</td><td class="zh">区域内路由器</td><td class="desc">OSPF 中不在主干区域也不在区域边界的路由器</td></tr>
+    <tr><td class="abbr">ABR</td><td class="en">Area Border Router</td><td class="zh">区域边界路由器</td><td class="desc">OSPF 中连接两个区域边界处的路由器</td></tr>
+    <tr><td class="abbr">BBR</td><td class="en">Backbone Router</td><td class="zh">主干路由器</td><td class="desc">OSPF 中位于主干区域（Area 0）的路由器</td></tr>
+    <tr><td class="abbr">ASBR</td><td class="en">AS Border Router</td><td class="zh">自治系统边界路由器</td><td class="desc">连接不同自治系统、引入外部路由的路由器</td></tr>
+    <tr><td class="abbr">TTL</td><td class="en">Time To Live</td><td class="zh">生存时间</td><td class="desc">IPv4 首部字段，每经过一跳减 1，为 0 时丢弃，防止数据报无限循环</td></tr>
+    <tr><td class="abbr">ICMP</td><td class="en">Internet Control Message Protocol</td><td class="zh">网际控制报文协议</td><td class="desc">向主机或路由器报告差错与异常情况</td></tr>
+    <tr><td class="abbr">PING</td><td class="en">Packet InterNet Groper</td><td class="zh">分组网间探测</td><td class="desc">利用 ICMP 测试两台主机之间的网络连通性</td></tr>
+    <tr><td class="abbr">VPN</td><td class="en">Virtual Private Network</td><td class="zh">虚拟专用网</td><td class="desc">借助公共互联网在逻辑上构建加密的专用通信隧道</td></tr>
+    <tr><td class="abbr">NAT</td><td class="en">Network Address Translation</td><td class="zh">网络地址转换</td><td class="desc">将私有 IP 地址转换为公有 IP 地址，实现内网访问互联网</td></tr>
+    <tr><td class="abbr">NAPT</td><td class="en">Network Address and Port Translation</td><td class="zh">网络地址与端口号转换</td><td class="desc">利用端口号让多台主机共用一个公有 IP 同时上网</td></tr>
+    <tr><td class="abbr">SDN</td><td class="en">Software Defined Network</td><td class="zh">软件定义网络</td><td class="desc">将网络控制层面与数据转发层面分离，用软件集中管控</td></tr>
+
+    <tr class="layer-header"><td colspan="4">运输层</td></tr>
+    <tr><td class="abbr">PID</td><td class="en">Process Identifier</td><td class="zh">进程标识符</td><td class="desc">标识计算机上正在运行的某个进程</td></tr>
+    <tr><td class="abbr">UDP</td><td class="en">User Datagram Protocol</td><td class="zh">用户数据报协议</td><td class="desc">无连接、不可靠、首部仅 8 字节，适合实时传输</td></tr>
+    <tr><td class="abbr">TCP</td><td class="en">Transmission Control Protocol</td><td class="zh">传输控制协议</td><td class="desc">面向连接、可靠传输，提供流量控制与拥塞控制</td></tr>
+    <tr><td class="abbr">MSL</td><td class="en">Maximum Segment Lifetime</td><td class="zh">最长报文段寿命</td><td class="desc">TCP 四次挥手中客户端需等待 2MSL 后才真正关闭连接</td></tr>
+
+    <tr class="layer-header"><td colspan="4">应用层</td></tr>
+    <tr><td class="abbr">DHCP</td><td class="en">Dynamic Host Configuration Protocol</td><td class="zh">动态主机配置协议</td><td class="desc">主机接入网络时自动获取 IP 地址等配置信息</td></tr>
+    <tr><td class="abbr">DNS</td><td class="en">Domain Name System</td><td class="zh">域名系统</td><td class="desc">将便于记忆的域名解析为机器可处理的 IP 地址</td></tr>
+    <tr><td class="abbr">TLD</td><td class="en">Top Level Domain</td><td class="zh">顶级域名</td><td class="desc">域名最高层级，如 .cn .com .org .edu 等</td></tr>
+    <tr><td class="abbr">FTP</td><td class="en">File Transfer Protocol</td><td class="zh">文件传送协议</td><td class="desc">在网络中的两台计算机之间传输文件</td></tr>
+    <tr><td class="abbr">SMTP</td><td class="en">Simple Mail Transfer Protocol</td><td class="zh">简单邮件传送协议</td><td class="desc">负责在邮件服务器之间可靠地传递电子邮件</td></tr>
+    <tr><td class="abbr">MIME</td><td class="en">Multipurpose Internet Mail Extensions</td><td class="zh">多用途因特网邮件扩展</td><td class="desc">使邮件支持非 ASCII 内容（图片、音频、多语言等）</td></tr>
+    <tr><td class="abbr">POP</td><td class="en">Post Office Protocol</td><td class="zh">邮局协议</td><td class="desc">将邮件从服务器下载到本地，下载后可离线阅读</td></tr>
+    <tr><td class="abbr">IMAP</td><td class="en">Internet Message Access Protocol</td><td class="zh">因特网邮件访问协议</td><td class="desc">在线操控服务器邮箱，邮件始终保存在服务器</td></tr>
+    <tr><td class="abbr">WWW</td><td class="en">World Wide Web</td><td class="zh">万维网</td><td class="desc">基于超链接与 HTTP 的全球信息查询与共享系统</td></tr>
+    <tr><td class="abbr">HTML</td><td class="en">HyperText Markup Language</td><td class="zh">超文本标记语言</td><td class="desc">用标签描述网页结构，支持超链接跳转</td></tr>
+    <tr><td class="abbr">CSS</td><td class="en">Cascading Style Sheets</td><td class="zh">层叠样式表</td><td class="desc">为 HTML 文档定义排版格式与视觉样式</td></tr>
+    <tr><td class="abbr">URL</td><td class="en">Uniform Resource Locator</td><td class="zh">统一资源定位符</td><td class="desc">在整个互联网范围内唯一标识某个文档或资源的地址</td></tr>
+  </tbody>
+</table>
+</div>
